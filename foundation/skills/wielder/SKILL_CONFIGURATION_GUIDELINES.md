@@ -37,3 +37,9 @@ Filesystem discovery and storage materialization must not leak into DAG logic, b
 - **Guideline:** Any operation that materializes, copies, syncs, or deletes storage artifacts (for example `shutil.copy*`, `os.makedirs`, `os.rename`, `os.remove`, `Path.mkdir`, or ad-hoc directory creation) MUST be owned by Bucketeer or a dedicated accessor, not by the DAG runner.
 - **Guideline:** `os.path.join`, `dirname`, and similar functions are prohibited for storage key construction. Parsing a resolved filename token via `basename` or `splitext` is acceptable, but storage lookup and routing are not.
 - **Guideline:** Looking up code paths or configuration paths is still path-boundary logic. If code is deciding where config, parquet, images, or outputs live, that resolution belongs in the configuration bootloader, Bucketeer, or a centralized accessor layer.
+
+### 7. Global Stage Tier Nomenclature (`stage_tier`)
+Deployment environments (`dev`, `int`, `qa`, `stage`, `prod`) must be physically segregated to prevent data collisions.
+- **Guideline:** Use `stage_tier` to define the target environment. This configuration resolves strictly beneath `developer.conf` to guarantee local sandboxes override production defaults.
+- **Guideline:** Map physical bucket roots via `stage_tier` (e.g., `starget-<domain>-<stage_tier>`) rather than routing environments manually.
+- **Guideline:** Store environment-specific configuration in `starget-data/conf/stage_tier/<stage>/tier.conf` to enforce uniform fallback inheritance.
