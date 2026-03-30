@@ -51,6 +51,8 @@ Config loading fails explicitly if any required field is missing/empty or if `ag
 wielder-antifragile/
   conf/
   docs/
+    antipatterns/
+    ephemeral-super-cluster-wielder.md
     foundation-manifesto.md
     implementation-architecture.md
   foundation/
@@ -84,3 +86,11 @@ PYTHONPATH=src python -c "from wielder_antifragile.personas.object import Person
 
 - [Foundation Manifesto](docs/foundation-manifesto.md)
 - [Implementation Architecture](docs/implementation-architecture.md)
+- [Ephemeral Super Cluster Architecture](docs/ephemeral-super-cluster-wielder.md)
+
+## Agentic Antipatterns
+
+As autonomous orchestration scales, Wielder explicitly defends against mathematical regressions.
+- [Context Drift (Fantasia Risk)](docs/antipatterns/context-drift.md): Structural defense against high-velocity scope hallucination.
+- [Style Drift (The OOD Paradox)](docs/antipatterns/style-drift.md): Structural defense against agents unconsciously regressing idiosyncratic code towards training-set norms.
+- [Hard-Stopping (The Security Straitjacket)](docs/antipatterns/hard-stopping.md): Structural critique of stunting agentic growth through permanent action bans instead of explicit skill wrappers.
