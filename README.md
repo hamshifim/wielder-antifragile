@@ -94,3 +94,4 @@ As autonomous orchestration scales, Wielder explicitly defends against mathemati
 - [Context Drift (Fantasia Risk)](docs/antipatterns/context-drift.md): Structural defense against high-velocity scope hallucination.
 - [Style Drift (The OOD Paradox)](docs/antipatterns/style-drift.md): Structural defense against agents unconsciously regressing idiosyncratic code towards training-set norms.
 - [Hard-Stopping (The Security Straitjacket)](docs/antipatterns/hard-stopping.md): Structural critique of stunting agentic growth through permanent action bans instead of explicit skill wrappers.
+- [Premature-Execution (The Builder's Impulse)](docs/antipatterns/premature-execution.md): Structural defense against agents autonomously violating "plan-only" bounds upon artifact approval.
