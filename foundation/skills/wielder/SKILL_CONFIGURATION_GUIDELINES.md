@@ -11,10 +11,11 @@ Configuration dependencies should guide the execution toward immediate awareness
 - **Guideline:** Avoid wrapping configuration extraction blocks in generic `try...except Exception` silencing patterns. 
 - **Guideline:** Prefer extracting properties natively via dot-notation (e.g., `conf.ecosystem`). Allow PyHocon to natively trigger a `ConfigMissingException` or `AttributeError` trace upon failure. Suppressing missing configurations obscures orchestration defects.
 
-### 2. Guardrails Against Rogue CLI and OS Mappings
-Wielder possesses a fledgling CLI, and other external interfaces may be actively developed in the future. However, it is a strict guardrail—particularly for AI agents—to avoid flooding the core config components with fragile system calls or ad-hoc argument parsers.
-- **Guideline:** Minimize the direct instantiation of `argparse` bindings or manual `os.environ` queries embedded actively within core PyHocon cascade logic (e.g., `wield_conf.py`).
-- **Guideline:** External coordinates should ideally be injected into the config hierarchy as native PyHocon dictionary fallbacks natively upstream. Let PyHocon organically orchestrate dynamic variable interpolation via `.with_fallback(..., resolve=True)`.
+### 2. The Evaluation Trump Model (Ingrained CLI Architecture)
+Historically, the Wielder architecture minimized CLI bindings to protect the mathematical purity of the `.conf` file. However, structurally isolating the CLI from the PyHocon loader creates catastrophic Execution Fragmentation (the "Splintering Source of Truth") where scripts evaluate configurations differently depending on how they were executed.
+- **Guideline:** The centralized Antifragile parser (`get_ecosystem_parser()`) MUST be natively ingrained into the absolute bottom of the `get_starget_conf()` evaluation loop. 
+- **Guideline (The Trump Card):** The evaluation hierarchy is mathematically absolute: *Project Base -> Ecosystem -> App -> Developer -> CLI*. By executing the CLI parser internally, terminal arguments natively map onto the configuration ConfigTree, systematically trumping all local developer configurations uniformly across every single orchestrating script without requiring manual `argparse` implementations in leaf files.
+- **Cross-Reference:** This native PyHocon trump execution is the foundational bridge permitting safe dry-run Sandboxing natively. See the strict Staging Sandbox bounds mapped formally in [Wielder Imager & Staging Sandboxing](file:///home/gideon/starget/wielder-antifragile/foundation/skills/wielder/SKILL_WIELDER_IMAGER.md).
 
 ### 3. Canonical Structural Mappings over Static Conditionals
 A framework built to handle limitless topologies scales significantly better when deferring to explicitly loaded HOCON schemas rather than evaluating static rules.
@@ -45,10 +46,10 @@ Deployment environments (`dev`, `int`, `qa`, `stage`, `prod`) must be physically
 - **Guideline:** Store environment-specific configuration in `starget-data/conf/stage_tier/<stage>/tier.conf` to enforce uniform fallback inheritance.
 
 ### 8. Core Topological Dimensions
-Agentic configuration reasoning MUST respect the four primary topology dimensions engineered into the framework's semantic contract:
+Agentic configuration reasoning MUST respect the primary topology dimensions engineered into the framework's semantic contract:
 - **Ecosystem**: A contextually bound set of distributed surfaces mapped to the workload (e.g., local WSL DAGs synced with Workspace vs AWS Airflow).
-- **Mode**: An operational variation (e.g., DevOps, MLOps, SecOps) acting upon the core business logic. It actively routes the operational behavior of the workload (e.g., an AWS service querying a GCP API vs. a local mocked service) and is dynamically modulated by the `ecosystem`, `stage_tier`, or `security` state.
+- **Compute Surface (`surface`)**: Formally replaces the legacy term `runtime_env`. It strictly defines the material physical execution plane (e.g., `docker`, `kind`, `gcp_gke`). An app-level configuration natively inherits the Ecosystem's default surface but can execute a structural override natively.
 - **Stage Tier**: The chronological deployment boundary (`dev`, `stage`, `prod`).
 - **Security Mode**: The RBAC and compartmentalization policy (e.g., isolating production secrets via overlapping 'dud-service' architectures).
-- **Ephemerality Policy**: The mandated teardown behavior (`full_ephemeral`, `partial_recycle`, `persistent`). Failing to supply this policy fails the orchestrator cleanly to prevent runaway zombie footprint.
-- **Deploy Strategy**: The overarching deployment footprint trigger (`standard`, `canary`, `blue_green`). This signals native infrastructure provisioning abstractions (e.g., deploying load balancers to fractional pod sets).
+- **Ephemerality Policy (`deletion`)**: The mandated teardown behavior (`full_ephemeral`, `partial_recycle`, `persistent`). 
+- **Deploy Strategy (`canary`)**: The overarching deployment footprint trigger (`standard`, `fuzzy_predicates`).

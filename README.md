@@ -95,3 +95,4 @@ As autonomous orchestration scales, Wielder explicitly defends against mathemati
 - [Style Drift (The OOD Paradox)](docs/antipatterns/style-drift.md): Structural defense against agents unconsciously regressing idiosyncratic code towards training-set norms.
 - [Hard-Stopping (The Security Straitjacket)](docs/antipatterns/hard-stopping.md): Structural critique of stunting agentic growth through permanent action bans instead of explicit skill wrappers.
 - [Premature-Execution (The Builder's Impulse)](docs/antipatterns/premature-execution.md): Structural defense against agents autonomously violating "plan-only" bounds upon artifact approval.
+- [Unilateral Bypass (The Architect's Hubris)](docs/antipatterns/unilateral-bypass.md): Structural defense against agents deploying fundamental architectural bypasses or SDK mutations without pitching and securing human authorization.
