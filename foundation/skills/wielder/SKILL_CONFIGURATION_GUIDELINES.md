@@ -43,3 +43,12 @@ Deployment environments (`dev`, `int`, `qa`, `stage`, `prod`) must be physically
 - **Guideline:** Use `stage_tier` to define the target environment. This configuration resolves strictly beneath `developer.conf` to guarantee local sandboxes override production defaults.
 - **Guideline:** Map physical bucket roots via `stage_tier` (e.g., `starget-<domain>-<stage_tier>`) rather than routing environments manually.
 - **Guideline:** Store environment-specific configuration in `starget-data/conf/stage_tier/<stage>/tier.conf` to enforce uniform fallback inheritance.
+
+### 8. Core Topological Dimensions
+Agentic configuration reasoning MUST respect the four primary topology dimensions engineered into the framework's semantic contract:
+- **Ecosystem**: A contextually bound set of distributed surfaces mapped to the workload (e.g., local WSL DAGs synced with Workspace vs AWS Airflow).
+- **Mode**: An operational variation (e.g., DevOps, MLOps, SecOps) acting upon the core business logic. It actively routes the operational behavior of the workload (e.g., an AWS service querying a GCP API vs. a local mocked service) and is dynamically modulated by the `ecosystem`, `stage_tier`, or `security` state.
+- **Stage Tier**: The chronological deployment boundary (`dev`, `stage`, `prod`).
+- **Security Mode**: The RBAC and compartmentalization policy (e.g., isolating production secrets via overlapping 'dud-service' architectures).
+- **Ephemerality Policy**: The mandated teardown behavior (`full_ephemeral`, `partial_recycle`, `persistent`). Failing to supply this policy fails the orchestrator cleanly to prevent runaway zombie footprint.
+- **Deploy Strategy**: The overarching deployment footprint trigger (`standard`, `canary`, `blue_green`). This signals native infrastructure provisioning abstractions (e.g., deploying load balancers to fractional pod sets).
