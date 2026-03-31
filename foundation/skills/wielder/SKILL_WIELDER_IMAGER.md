@@ -22,8 +22,24 @@ To resolve this, the `Wielder` Imager (`pack_image_antifragile`) strictly mandat
 3. **Decoupling:** Because the staging environment is instantly decoupled from the live code, the developer can instantly return to writing code on the live footprint. The 10-minute Docker daemon build operates silently against the staging clone.
 
 ## Explicit Topology over Internal Context
-The sandbox path (e.g., `~/artifacts/starget_base...`) must NEVER be hardcoded inside the `pack_image` executors.
-The topographical source of truth is always the **Caller Execution Script** (`image.py`). The caller securely evaluates the PyHocon context (via `get_super_project_roots()`) and explicitly passes the `staging_root` into the imager proxy. This completely centralizes the architectural footprint natively into the deployment configuration boundaries, ensuring zero context drift across K8s tiers.
+The sandbox path (e.g., `~/artifacts/starget_base...`) must NEVER be inferred inside the `pack_image` executors using legacy methods like `__file__` or `get_super_project_roots()`.
+The topographical source of truth is exclusively the **PyHocon Configuration Stream**. The Caller Execution Script (`image.py`) securely evaluates the PyHocon context natively and explicitly passes the `conf.super_project_root` into the imager proxy as `staging_root`. This completely centralizes the architectural footprint natively into the PyHocon boundaries, ensuring zero Context Drift for globally installed packages.
+
+---
+
+# Image Modulation & Topographical Modes
+To ensure images seamlessly adapt to the surfaces they land on, Docker tags strictly obey native PyHocon runtime boundaries.
+
+### 1. Dynamic Mode Tagging
+Container tags must fundamentally flex against the terminal topology (e.g., inheriting `stage_tier` to dynamically shift between `:dev` and `:prod`).
+- **Rule:** Project-level files (`image.conf`) define generic strings (`base_image_name = "starget/starget_base"`). The dynamic combination strictly occurs via string interpolation: `base_image_full = ${base_image_name}":"${stage_tier}`.
+
+### 2. App-Level Reference Pointers
+When an internal Application builds on a platform Base Image, it mathematically binds to it by overriding the local PyHocon array using project inheritance.
+- **Rule:** Do not hardcode project image arrays into App `Dockerfiles`. Instead, the Application explicitly declares its dependency inside `app.conf` (e.g. `base_image = ${base_image_full}`).
+
+### 3. Agnostic Docker Contexts
+- **Rule:** Target Dockerfiles must replace hardcoded `FROM` repository targets with naked argument variables (e.g., `ARG BASE_IMAGE` `FROM ${BASE_IMAGE}`). The orchestrator (`imager.py`) seamlessly yields the dynamically requested property via the `--build-arg BASE_IMAGE=` payload.
 
 ---
 

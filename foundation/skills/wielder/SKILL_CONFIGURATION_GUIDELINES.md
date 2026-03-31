@@ -53,3 +53,9 @@ Agentic configuration reasoning MUST respect the primary topology dimensions eng
 - **Security Mode**: The RBAC and compartmentalization policy (e.g., isolating production secrets via overlapping 'dud-service' architectures).
 - **Ephemerality Policy (`deletion`)**: The mandated teardown behavior (`full_ephemeral`, `partial_recycle`, `persistent`). 
 - **Deploy Strategy (`canary`)**: The overarching deployment footprint trigger (`standard`, `fuzzy_predicates`).
+
+### 9. The `__file__` Context Drift Antipattern
+Legacy python patterns frequently use `os.path.dirname(__file__)` to trace project directories relative to the execution script. In a unified orchestration topology, **this is a catastrophic antipattern**.
+- **The Bug:** If a module (like `Wielder`) is globally `pip install`ed, `__file__` will traverse backward into the system Python or PyEnv directories (e.g., `~/.pyenv/versions/...`), completely severing the script from the actual codebase root and corrupting staging directories or Docker contexts.
+- **Guideline:** NEVER deduce project geometry or staging roots using `__file__`.
+- **Guideline:** There is only ONE source of local Filesystem Truth: **The PyHocon Configuration Stream**. Roots must be strictly evaluated at the configuration source (`conf.super_project_root` or `conf.stage_root`) and statically passed down to orchestrators and SDK execution proxies.
