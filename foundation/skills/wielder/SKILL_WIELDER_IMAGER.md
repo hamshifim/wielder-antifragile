@@ -6,9 +6,9 @@ description: "Core architectural mandate regarding Docker context execution, out
 # Wielder Imager Staging Mechanism
 
 ## The Docker Daemon Antipattern
-A common developmental antipattern is attempting to execute `docker build -f <Dockerfile> .` directly against the live Git monorepo source (the "Super Project Root").
+A common developmental antipattern is attempting to execute `docker build -f <Dockerfile> .` directly against the live Git super-repo source (the "Super Project Root").
 
-While Docker natively handles context tarballing, executing this against live, massive monorepos creates critical structural failures:
+While Docker natively handles context tarballing, executing this against live, massive super-repos creates critical structural failures:
 1. **IDE Throttling & Traffic Lockups:** When Docker parses a giant, multi-asset context, local IDEs drastically spike CPU/IO attempting to track the simultaneous read operations, locking the developer out of simultaneous coding.
 2. **Third-Party Asset Pollution:** Often, Docker builds require injecting arbitrary external weights, `.env` files, or binaries. If the build context is the live repository, these assets must be generated directly inside the tracked tree, aggressively polluting the pristine Git structure.
 3. **Temporal Smearing:** A 10-minute Docker compilation reading from a live, mutable directory risks pulling in partial file states if the developer modifies the code mid-build.
