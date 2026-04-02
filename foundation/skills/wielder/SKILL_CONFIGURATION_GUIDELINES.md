@@ -96,3 +96,8 @@ Legacy python patterns frequently use `os.path.dirname(__file__)` to trace proje
 - **The Bug:** If a module (like `Wielder`) is globally `pip install`ed, `__file__` will traverse backward into the system Python or PyEnv directories (e.g., `~/.pyenv/versions/...`), completely severing the script from the actual codebase root and corrupting staging directories or Docker contexts.
 - **Guideline:** NEVER deduce project geometry or staging roots using `__file__`.
 - **Guideline:** There is only ONE source of local Filesystem Truth: **The PyHocon Configuration Stream**. Roots must be strictly evaluated at the configuration source (`conf.super_project_root` or `conf.stage_root`) and statically passed down to orchestrators and SDK execution proxies.
+
+### 10. Inline Import Discipline
+Inline imports (import statements nested inside functions or methods) obscure dependency trees, trigger unpredictable parsing latency during execution sequences, and fracture static analysis graphs.
+- **Guideline:** NEVER use inline imports natively within Wielder execution graphs or applications. ALL imports must be physically hoisted to the global `HEAD` of the module.
+- **Exceptions:** Inline imports are strictly forbidden unless mathematically necessary to break confirmed circular dependencies, isolate heavily localized Process/Thread initializations, or conditionally load massive multi-gigabyte Data Lake libraries (e.g., `PyTorch` or `Tensorflow` in a lightweight REST API). Short of those exact hardware/memory constraints, use global imports natively.
