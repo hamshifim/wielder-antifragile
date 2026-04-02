@@ -1,0 +1,39 @@
+---
+name: Wielder Scripting & Evaluation Skills
+description: Core architectural patterns for writing `Wielder` orchestration and evaluation scripts, focusing on configuration boundaries, dependency inheritance, and physical formatting conventions.
+---
+
+# Wielder Script Architectural Patterns
+
+When writing or modifying `Wielder` orchestration scripts (e.g., K8s deployment wrappers, `bootstrap.py` sequences, or local pipeline evaluators), we generally adhere to the following `Wielder-Antifragile` guidelines to help them scale gracefully across environments. 
+
+## 1. Avoid Reinventing the Wheel
+`Wielder` exists as a specialized ecosystem library to handle orchestration heavy lifting. As a rule of thumb, scripts work best when they act as thin, declarative wrappers linking `Wielder` primitives to execution targets. 
+
+If you find yourself writing custom logic to sync directories, parse YAML text, or read `.env` configuration files manually, it usually implies there's a better path:
+* Look for established implementations natively within `Wielder` utility modules (`wielder.util`, `wielder.wield.project`, etc.). 
+* Depend natively on built-in tools like `KubectlBucketeer`, native PyHocon parsers (`get_app_conf()`), and native deployment classes.
+
+## 2. Configuration-Driven Filesystem Operations
+Wielder orchestration scripts shy away from hardcoded directory paths, deeply nested string concatenations, or magic constants pointing to files.
+
+* The preferred way a script relates to the virtual or physical file system is through the centralized Configuration (PyHocon `.conf` files).
+* Utilize `get_app_conf()` or native Wielder extraction patterns to determine the contextual `staging_root`, `bucket_path`, or `target_database` dynamically.
+
+## 3. Standalone Invocation Formatting
+Because Wielder evaluation scripts are often automated or executed directly across various shells (WSL, native Linux, CI/CD), they benefit from secure formatting to prevent common shell evaluation traps (e.g., the ImageMagick `import` bash hijacking).
+
+To avoid silent execution hangs, a standard `*.py` script intended for execution (e.g., containing an `if __name__ == '__main__':` block) typically implements two straightforward conditions:
+
+1. **The Unix Shebang**:
+   The first line of the evaluation script designates the Python environment to bypass default Bash interpretation:
+   ```python
+   #!/usr/bin/env python
+   ```
+2. **Executable Permissions**:
+   The script is granted explicit execution rights at creation:
+   ```bash
+   chmod +x <filename>.py
+   ```
+
+By adhering to this pattern, cross-boundary invocations like `./fetch_protenix_bundle.py` or `./sanity.py` are free to execute natively as Python processes without relying on the shell's fallback assumptions.

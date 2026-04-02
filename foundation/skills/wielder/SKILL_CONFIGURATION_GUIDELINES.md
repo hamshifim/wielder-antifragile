@@ -6,6 +6,43 @@ description: Wielder PyHocon Configuration Guidelines (Strict Architectural SOP)
 
 The Wielder framework relies on a deterministic and structurally sound configuration layer. As data domains and topologies scale, adherence to these engineering constraints improves maintainability, preserves clear failure boundaries, and supports consistent structural abstraction.
 
+---
+
+## Part 1: The Resolving Configuration Ecology
+
+To support a distributed super-repo architecture where applications concurrently bridge different sets of bare-metal development workstations, remote K8s clusters, and localized shadow deployments, Wielder enforces a hyper-granular, predictable resolution hierarchy.
+
+### The Resolving Configuration Hierarchy
+
+The evaluation hierarchy relies on object-tree merging priorities. Overrides elegantly layer across domains, establishing local primacy sequentially against standard defaults. The structure parsed functionally via `wield_conf.py` resolves chronologically from bottom (lowest fallback) to top (absolute primacy):
+
+1. **Application Baseline (`app.conf`)**
+   * **Role**: Defines the fundamental configuration limits for an application.
+
+2. **Project Base (`project.conf`)**
+   * **Role**: Root topology configuration spanning structural dependencies globally without overriding local `stage_tier` limits.
+
+3. **Ecosystem & Deployment Triggers (`canary`, `destroy`, `ecosystem`)**
+   * **Role**: Dictates global network routing, architecture maps, and overarching deployment footprint triggers spanning multiple domains.
+
+4. **Domain Modes (`surface`, `stage_tier`, `security`)**
+   * **Role**: The core operational matrix orchestrating exact multidimensional overrides. Defines physical orchestration parameters (`surface`), deployment boundaries (`dev`, `stage`, `prod`), and RBAC compartmentation.
+
+5. **Developer Overlays (`developer.conf`)**
+   * **Role**: Purely localized, untracked evaluations dictating aggressive isolation boundaries dynamically during active development. Trumps all downstream domain boundaries.
+
+6. **CLI Parser (Absolute Primacy)**
+   * **Role**: Natively dictates execution execution, overriding developer configurations implicitly during dynamic pipeline spins without manual parameter passing inside sub-scripts.
+
+### Architectural Mandates
+* **No Orphaned Variables**: A configuration typically needs to exist natively inside the Application Baseline (Tier 1) before it can be overridden in Tier 4.
+* **Fail-Closed Execution**: If an override requires structural evaluation arrays (`[]`), the Baseline establishes the empty array. Masking empty configurations inside comments to "bypass PyHocon overlays" is an antipattern.
+* **Mock Isolation**: Experimental boundaries ride explicitly on the Domain Modes (`stage_tier`), avoiding pollution of Tier 1.
+
+---
+
+## Part 2: Configuration Guidelines (SOPs)
+
 ### 1. Strict Attribute Resolution
 Configuration dependencies should guide the execution toward immediate awareness if environment parameters are missing.
 - **Guideline:** Avoid wrapping configuration extraction blocks in generic `try...except Exception` silencing patterns. 
