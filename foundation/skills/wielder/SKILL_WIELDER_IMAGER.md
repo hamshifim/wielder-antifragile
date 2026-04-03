@@ -18,8 +18,9 @@ To resolve this, the `Wielder` Imager (`pack_image_antifragile`) strictly mandat
 
 ### Execution Rules
 1. **Snapshotting:** Before `docker build` is called, a fast `shutil.copytree` (ignoring `.git`, `__pycache__`, and IDE `.idea` bloat) replicates the active, necessary modules into a UUID-isolated `/artifacts` temporary directory.
-2. **Capturing Uncommitted State:** The copy instantly bridges any uncommitted working changes without relying on a `WGit` pipeline, enabling true rapid-iteration development.
-3. **Decoupling:** Because the staging environment is instantly decoupled from the live code, the developer can instantly return to writing code on the live footprint. The 10-minute Docker daemon build operates silently against the staging clone.
+2. **Committed Super-Repo Determinism:** In a Git super-repo with submodules, image baking must be treated as a committed-state operation unless the imager is explicitly proven to stage live workspace state. If the image is sourced through the super-repo tree, the bake will reflect the committed submodule revision and the committed super-repo pointer, not merely the editor buffer.
+3. **Mandatory Bake Order for Submodules:** If a deployment depends on changes inside a submodule (for example `starget-in-silico`), the correct sequence is: commit the submodule, commit the super-repo pointer update, then bake the image, then deploy. Failing to complete this chain yields stale configs or stale code inside the container even when the local workspace looks correct.
+4. **Decoupling:** Because the staging environment is instantly decoupled from the live code, the developer can instantly return to writing code on the live footprint. The 10-minute Docker daemon build operates silently against the staging clone.
 
 ## Explicit Topology over Internal Context
 The sandbox path (e.g., `~/artifacts/starget_base...`) must NEVER be inferred inside the `pack_image` executors using legacy methods like `__file__` or `get_super_project_roots()`.
