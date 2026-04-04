@@ -26,3 +26,9 @@ Ecosystems are not merely deployment labels. Their deeper role is to carry the *
 - **Guideline:** Favor ecosystems to express combinations of surfaces. This includes pure local execution, local microservice execution, and future mixed topologies where one dependency remains local while another resolves against a remote surface.
 - **Guideline:** A local-first base ecosystem is valid and often preferable during active development. Additional ecosystems may then layer service-oriented or hybrid variants without forcing application business logic to absorb deployment details.
 - **Guideline:** Application code should read the already-resolved topology from the ecosystem configuration and branch at the transport boundary only. Scientific DAG payloads should not be overloaded with infrastructure routing concerns.
+
+### 5. Workflow Contracts and Ecosystem Ownership
+Messaging topics, consumer groups, and similar workflow orchestration contracts should not default to project-global scope.
+- **Guideline:** If a workflow currently maps 1:1 to an ecosystem, place its orchestration contract inside that ecosystem.
+- **Guideline:** If the same workflow contract must be shared by multiple ecosystems later, promote it into a workflow-level include and let the participating ecosystems inherit it.
+- **Guideline:** Do not keep workflow-specific messaging contracts at project root unless they are truly global across the entire project.
