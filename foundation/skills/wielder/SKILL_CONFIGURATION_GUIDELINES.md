@@ -91,6 +91,21 @@ Agentic configuration reasoning MUST respect the primary topology dimensions eng
 - **Ephemerality Policy (`deletion`)**: The mandated teardown behavior (`full_ephemeral`, `partial_recycle`, `persistent`). 
 - **Deploy Strategy (`canary`)**: The overarching deployment footprint trigger (`standard`, `fuzzy_predicates`).
 
+### 8.1 Service Topology Ownership: Ecosystem over DAG
+Distributed service transport selection must ride on the Ecosystem axis, not inside scientific DAG payloads.
+- **Guideline:** If an application can operate against multiple transport surfaces (for example `sdk` vs `grpc` for an MSA search dependency), the active mode MUST be resolved from the ecosystem configuration tree, not embedded repeatedly on each DAG target.
+- **Guideline:** DAG payloads should declare scientific intent (`use_msa`, upstream dependency presence, target identifiers), not infrastructure reachability modes such as `docker_kube`, `aws`, or hostnames. Those are environmental topologies and therefore belong to the ecosystem hierarchy.
+- **Guideline:** Development ecosystems are allowed to prefer local-first modes (for example `sdk`) even if production ecosystems ultimately prefer remote service transport (`grpc`). This is not wasteful duplication; it preserves local iteration speed and decouples application development from image-build and deploy latency.
+
+### 8.2 Shared Service Layering: Core -> Side-Effect Layer -> Transport
+When an application exposes the same capability through both direct API transport and local SDK execution, the implementation must be layered cleanly to avoid WET transport logic.
+- **Guideline:** Extract the pure computational core first (for example an MSA search function returning raw `a3m` text).
+- **Guideline:** Extract a side-effect layer above that core which owns the canonical external effects such as datalake persistence, manifests, telemetry, and completion markers.
+- **Guideline:** The direct API transport layer (for example a gRPC servicer) MUST call the extracted side-effect layer rather than containing unique persistence logic inline.
+- **Guideline:** The direct SDK path MUST call that same side-effect layer rather than simulating a local gRPC roundtrip.
+- **Guideline:** If a producer DAG, an SDK caller, and a direct API surface such as gRPC all expose the same domain capability, they should converge on the same side-effect layer so that canonical external effects are not fragmented across three implementations.
+- **Guideline:** If time and scope were unconstrained, a brokered messaging IO architecture would be the more reactive long-term shape than direct API calls. Until that complexity is justified, keep the present direct API layering explicit and local rather than prematurely splitting into micro-micro services.
+
 ### 9. The `__file__` Context Drift Antipattern
 Legacy python patterns frequently use `os.path.dirname(__file__)` to trace project directories relative to the execution script. In a unified orchestration topology, **this is a catastrophic antipattern**.
 - **The Bug:** If a module (like `Wielder`) is globally `pip install`ed, `__file__` will traverse backward into the system Python or PyEnv directories (e.g., `~/.pyenv/versions/...`), completely severing the script from the actual codebase root and corrupting staging directories or Docker contexts.
