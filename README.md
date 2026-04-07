@@ -88,6 +88,26 @@ PYTHONPATH=src python -c "from wielder_antifragile.personas.object import Person
 - [Implementation Architecture](docs/implementation-architecture.md)
 - [Ephemeral Super Cluster Architecture](docs/ephemeral-super-cluster-wielder.md)
 
+## Local Context Packs
+
+Tracked example context packs belong in:
+
+- `conf/context_conf_examples/<name>/`
+
+Live local context packs belong in:
+
+- `conf/context_conf/<name>/`
+
+and should remain git-ignored.
+
+The sanctioned workflow is:
+
+```bash
+cp -r conf/context_conf_examples/default_conf conf/context_conf/default_conf
+```
+
+Then edit the copied local files to match the developer or agent context.
+
 ## Markdown Index
 
 ### Root

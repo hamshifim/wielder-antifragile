@@ -84,6 +84,9 @@ Deployment environments (`dev`, `int`, `qa`, `stage`, `prod`) must be physically
 ### 7.1 Central Context Packs over Repo-Local Developer Overlays
 - **Guideline:** Standardize developer-local overrides in `context_conf/<name>/` at the super-repo root. Do not keep repo-local `conf/developer/` folders as active peers in the load path.
 - **Guideline:** `context_conf/default_conf/` is the canonical baseline context. Additional named packs (for example `context_conf/hermes_batch_qa/`) are encouraged when developers need shareable, versioned local contexts.
+- **Guideline:** Inside application repos, track only `conf/context_conf_examples/<name>/`. The live local `conf/context_conf/<name>/` tree is purely local state and must be ignored by Git.
+- **Guideline:** The sanctioned operator flow is: copy one example pack, then edit it locally.
+  - Example: `cp -r conf/context_conf_examples/default_conf conf/context_conf/default_conf`
 - **Guideline:** App-scoped service-shape toggles such as `debug_mode` and `local_mount` should remain app-level config values and be overridden from the active `context_conf` pack, not promoted into a global topological tier.
 - **Guideline:** Map physical bucket roots via `stage_tier` (e.g., `starget-<domain>-<stage_tier>`) rather than routing environments manually.
 - **Guideline:** Store environment-specific configuration in `starget-data/conf/stage_tier/<stage>/tier.conf` to enforce uniform fallback inheritance.

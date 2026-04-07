@@ -20,6 +20,7 @@ Wielder orchestration scripts shy away from hardcoded directory paths, deeply ne
 * The preferred way a script relates to the virtual or physical file system is through the centralized Configuration (PyHocon `.conf` files).
 * Utilize `get_app_conf()` or native Wielder extraction patterns to determine the contextual `staging_root`, `bucket_path`, or `target_database` dynamically.
 * When local development context matters, scripts should rely on the active central `context_conf/<name>/developer.conf` pack rather than repo-local `conf/developer/` overrides or ad hoc CLI flags.
+* For app-local examples, keep tracked packs under `conf/context_conf_examples/<name>/` and keep `conf/context_conf/<name>/` ignored. The human and agent workflow is always: copy an example pack into `conf/context_conf/`, then edit the copied local pack.
 
 ## 3. Standalone Invocation Formatting
 Because Wielder evaluation scripts are often automated or executed directly across various shells (WSL, native Linux, CI/CD), they benefit from secure formatting to prevent common shell evaluation traps (e.g., the ImageMagick `import` bash hijacking).
