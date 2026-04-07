@@ -28,8 +28,8 @@ The evaluation hierarchy relies on object-tree merging priorities. Overrides ele
 4. **Domain Modes (`surface`, `stage_tier`, `security`)**
    * **Role**: The core operational matrix orchestrating exact multidimensional overrides. Defines physical orchestration parameters (`surface`), deployment boundaries (`dev`, `stage`, `prod`), and RBAC compartmentation.
 
-5. **Developer Overlays (`developer.conf`)**
-   * **Role**: Purely localized, untracked evaluations dictating aggressive isolation boundaries dynamically during active development. Trumps all downstream domain boundaries.
+5. **Context Packs (`context_conf/<name>/developer.conf`)**
+   * **Role**: Centralized developer context packs dictating localized overrides during active development. These packs trump downstream domain boundaries without fragmenting overrides across repo-local `conf/developer/` folders.
 
 6. **CLI Parser (Absolute Primacy)**
    * **Role**: Natively dictates execution execution, overriding developer configurations implicitly during dynamic pipeline spins without manual parameter passing inside sub-scripts.
@@ -53,7 +53,7 @@ Historically, the Wielder architecture minimized CLI bindings to protect the mat
 - **Guideline:** The centralized Antifragile parser (`get_ecosystem_parser()`) MUST be natively ingrained into the absolute bottom of the `get_starget_conf()` evaluation loop. 
 - **Guideline (The Trump Card):** The evaluation hierarchy is mathematically absolute: *Project Base -> Ecosystem -> App -> Developer -> CLI*. By executing the CLI parser internally, terminal arguments natively map onto the configuration ConfigTree, systematically trumping all local developer configurations uniformly across every single orchestrating script without requiring manual `argparse` implementations in leaf files.
 - **Cross-Reference:** This native PyHocon trump execution is the foundational bridge permitting safe dry-run Sandboxing natively. See the strict Staging Sandbox bounds mapped formally in [Wielder Imager & Staging Sandboxing](file:///home/gideon/starget/wielder-antifragile/foundation/skills/wielder/SKILL_WIELDER_IMAGER.md).
-- **Guideline (Workflow Runtime Preference):** For distributed workflow ecosystems, CLI trumps are useful during bootstrap and planning, but runtime components should prefer staged configuration artifacts when native propagation exists. Avoid making container command-line flags the long-term operational source of truth when `developer.conf` or another staged config artifact can be copied into the runtime surface.
+- **Guideline (Workflow Runtime Preference):** For distributed workflow ecosystems, CLI trumps are useful during bootstrap and planning, but runtime components should prefer staged configuration artifacts when native propagation exists. Avoid making container command-line flags the long-term operational source of truth when `context_conf/<name>/developer.conf` or another staged config artifact can be copied into the runtime surface.
 
 ### 3. Canonical Structural Mappings over Static Conditionals
 A framework built to handle limitless topologies scales significantly better when deferring to explicitly loaded HOCON schemas rather than evaluating static rules.
@@ -79,7 +79,12 @@ Filesystem discovery and storage materialization must not leak into DAG logic, b
 
 ### 7. Global Stage Tier Nomenclature (`stage_tier`)
 Deployment environments (`dev`, `int`, `qa`, `stage`, `prod`) must be physically segregated to prevent data collisions.
-- **Guideline:** Use `stage_tier` to define the target environment. This configuration resolves strictly beneath `developer.conf` to guarantee local sandboxes override production defaults.
+- **Guideline:** Use `stage_tier` to define the target environment. This configuration resolves strictly beneath the active `context_conf` pack to guarantee local sandboxes override production defaults.
+
+### 7.1 Central Context Packs over Repo-Local Developer Overlays
+- **Guideline:** Standardize developer-local overrides in `context_conf/<name>/` at the super-repo root. Do not keep repo-local `conf/developer/` folders as active peers in the load path.
+- **Guideline:** `context_conf/default_conf/` is the canonical baseline context. Additional named packs (for example `context_conf/hermes_batch_qa/`) are encouraged when developers need shareable, versioned local contexts.
+- **Guideline:** App-scoped service-shape toggles such as `debug_mode` and `local_mount` should remain app-level config values and be overridden from the active `context_conf` pack, not promoted into a global topological tier.
 - **Guideline:** Map physical bucket roots via `stage_tier` (e.g., `starget-<domain>-<stage_tier>`) rather than routing environments manually.
 - **Guideline:** Store environment-specific configuration in `starget-data/conf/stage_tier/<stage>/tier.conf` to enforce uniform fallback inheritance.
 

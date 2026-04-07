@@ -44,7 +44,7 @@ When an internal Application builds on a platform Base Image, it mathematically 
 
 ### 4. Runtime Mode Propagation
 - **Rule:** It is acceptable and often useful to mirror resolved topological modes such as `ECOSYSTEM` and `STAGE_TIER` into container environment variables for telemetry, inspection, and forensic replay.
-- **Rule:** Those environment variables should not become the preferred execution source of truth if the workflow can instead stage a native configuration artifact such as `developer.conf` into the runtime surface.
+- **Rule:** Those environment variables should not become the preferred execution source of truth if the workflow can instead stage a native configuration artifact such as `context_conf/<name>/developer.conf` into the runtime surface.
 - **Rule:** For workflow ecosystems, prefer copying the staged configuration artifact after clone/update over permanently depending on deploy-time CLI mode injection inside container commands.
 
 ---

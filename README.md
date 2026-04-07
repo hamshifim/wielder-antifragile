@@ -88,6 +88,69 @@ PYTHONPATH=src python -c "from wielder_antifragile.personas.object import Person
 - [Implementation Architecture](docs/implementation-architecture.md)
 - [Ephemeral Super Cluster Architecture](docs/ephemeral-super-cluster-wielder.md)
 
+## Markdown Index
+
+### Root
+
+- [README](README.md)
+
+### Docs
+
+- [Adversarial Messaging Protocol Plan](docs/adversarial-messaging-protocol-plan.md)
+- [Ephemeral Super Cluster Wielder](docs/ephemeral-super-cluster-wielder.md)
+- [Foundation Manifesto](docs/foundation-manifesto.md)
+- [Implementation Architecture](docs/implementation-architecture.md)
+
+### Antipatterns
+
+- [Context Drift](docs/antipatterns/context-drift.md)
+- [Hard-Stopping](docs/antipatterns/hard-stopping.md)
+- [Mode Violation](docs/antipatterns/mode-violation.md)
+- [Premature Execution](docs/antipatterns/premature-execution.md)
+- [Style Drift](docs/antipatterns/style-drift.md)
+- [Unilateral Bypass](docs/antipatterns/unilateral-bypass.md)
+
+### Foundation
+
+- [Foundation README](foundation/README.md)
+- [Glossary](foundation/docs/GLOSSARY.md)
+- [Master Personas](foundation/docs/catalogs/MASTER_PERSONAS.md)
+- [Master Skills](foundation/docs/catalogs/MASTER_SKILLS.md)
+- [The Antifragile Manifesto](foundation/docs/manifesto/THE_ANTIFRAGILE_MANIFESTO.md)
+
+### Personas
+
+- [Persona Planner](foundation/personas/wielder/PERSONA_PLANNER.md)
+- [Persona Platform Developer](foundation/personas/wielder/PERSONA_PLATFORM_DEVELOPER.md)
+- [Persona QA Architect](foundation/personas/wielder/PERSONA_QA_ARCHITECT.md)
+- [Git Specialist README](foundation/personas/wielder/git_specialist/README.md)
+- [Git Specialist Body](foundation/personas/wielder/git_specialist/body.md)
+- [Wielder Core Body](foundation/personas/wielder/wielder_core/body.md)
+
+### Skills
+
+- [Configuration Guidelines](foundation/skills/wielder/SKILL_CONFIGURATION_GUIDELINES.md)
+- [Ecosystem Guidelines](foundation/skills/wielder/SKILL_ECOSYSTEM_GUIDELINES.md)
+- [Einstein Simplicity](foundation/skills/wielder/SKILL_EINSTEIN_SIMPLICITY.md)
+- [Naming Guidelines](foundation/skills/wielder/SKILL_NAMING_GUIDELINES.md)
+- [Notebook Guidelines](foundation/skills/wielder/SKILL_NOTEBOOK_GUIDELINES.md)
+- [Parcelling Guidelines](foundation/skills/wielder/SKILL_PARCELLING_GUIDELINES.md)
+- [Scope Guidelines](foundation/skills/wielder/SKILL_SCOPE_GUIDELINES.md)
+- [Test Guidelines](foundation/skills/wielder/SKILL_TEST_GUIDELINES.md)
+- [Wielder Imager](foundation/skills/wielder/SKILL_WIELDER_IMAGER.md)
+- [Wielder Scripts](foundation/skills/wielder/SKILL_WIELDER_SCRIPTS.md)
+- [Yoda Council](foundation/skills/wielder/SKILL_YODA_COUNCIL.md)
+
+### Contracts and Workflows
+
+- [Skill Handoff Protocol](foundation/contracts/handoffs/SKILL_HANDOFF_PROTOCOL.md)
+- [Agentic Adversarial Workflow](foundation/workflows/adversarial/AGENTIC_ADVERSARIAL_WORKFLOW.md)
+
+### Rendered / Audit Artifacts
+
+- [Git Specialist Resolved](.foundation_audit/rendered_markdown/personas/git_specialist_RESOLVED.md)
+- [Pytest Cache README](.pytest_cache/README.md)
+
 ## Agentic Antipatterns
 
 As autonomous orchestration scales, Wielder explicitly defends against mathematical regressions.
