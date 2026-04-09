@@ -32,3 +32,9 @@ Messaging topics, consumer groups, and similar workflow orchestration contracts 
 - **Guideline:** If a workflow currently maps 1:1 to an ecosystem, place its orchestration contract inside that ecosystem.
 - **Guideline:** If the same workflow contract must be shared by multiple ecosystems later, promote it into a workflow-level include and let the participating ecosystems inherit it.
 - **Guideline:** Do not keep workflow-specific messaging contracts at project root unless they are truly global across the entire project.
+
+### 6. Naming App-Specific Ecosystem Overrides
+Cross-project orchestration may need to tell multiple downstream apps which ecosystem they should run under. A generic field name can become ambiguous once one config modulates more than one app.
+- **Guideline:** Strongly suggest using app-specific override names such as `app_ecosystem_mmseqs_sequence_alignment` when a config may route multiple downstream apps.
+- **Guideline:** Strongly suggest avoiding generic names such as `app_ecosystem` in multi-app orchestration layers, because they tend to hide which downstream runtime is being modulated.
+- **Guideline:** Strongly suggest avoiding self-referential assignments where an ecosystem overlay redundantly sets an app-specific ecosystem field to the exact same ecosystem name as the containing overlay, unless that duplication is deliberately carrying review signal.
