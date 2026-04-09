@@ -38,3 +38,16 @@ Cross-project orchestration may need to tell multiple downstream apps which ecos
 - **Guideline:** Strongly suggest using app-specific override names such as `app_ecosystem_mmseqs_sequence_alignment` when a config may route multiple downstream apps.
 - **Guideline:** Strongly suggest avoiding generic names such as `app_ecosystem` in multi-app orchestration layers, because they tend to hide which downstream runtime is being modulated.
 - **Guideline:** Strongly suggest avoiding self-referential assignments where an ecosystem overlay redundantly sets an app-specific ecosystem field to the exact same ecosystem name as the containing overlay, unless that duplication is deliberately carrying review signal.
+
+### 7. Family Ecosystems vs Bootable Runtime Ecosystems
+Thin reusable ecosystem families and concrete bootable ecosystems are related, but they are not the same thing.
+- **Guideline:** Strongly suggest treating a shared family ecosystem such as `protenix_binding` as a reusable semantic base first, not as an automatic downstream runtime target.
+- **Guideline:** Strongly suggest using `app_ecosystem_<app_name>` as the explicit bridge when a concrete deploy ecosystem needs to adapt a downstream app onto a different bootable runtime ecosystem.
+- **Guideline:** Strongly suggest avoiding the temptation to point a downstream runtime directly at an abstract family ecosystem unless that family has intentionally been made bootable and verified end to end.
+- **Guideline:** When a family ecosystem exists alongside thin concrete ecosystems, strongly suggest keeping the concrete ecosystems responsible for operational facts such as registry authority, kube context, pull behavior, and downstream runtime bridging.
+
+### 8. Thin Concrete Ecosystems
+Once a shared family ecosystem has been extracted, the remaining concrete ecosystems should stay obvious and reviewable.
+- **Guideline:** Strongly suggest consolidating concrete override ecosystems into a single `ecosystem_manifest.conf` when their remaining role is to override a small set of operational facts.
+- **Guideline:** Strongly suggest deleting empty or misleading concrete override fragments once their contents have been centralized, rather than preserving them as ceremonial files.
+- **Guideline:** Strongly suggest keeping deployment-resource ordering and Kubernetes object lists at the deployment layer, not inside ecosystem overlays, even when those ecosystems become very thin.

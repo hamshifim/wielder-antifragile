@@ -54,6 +54,8 @@ Historically, the Wielder architecture minimized CLI bindings to protect the mat
 - **Guideline (The Trump Card):** The evaluation hierarchy is mathematically absolute: *Project Base -> Ecosystem -> App -> Developer -> CLI*. By executing the CLI parser internally, terminal arguments natively map onto the configuration ConfigTree, systematically trumping all local developer configurations uniformly across every single orchestrating script without requiring manual `argparse` implementations in leaf files.
 - **Cross-Reference:** This native PyHocon trump execution is the foundational bridge permitting safe dry-run Sandboxing natively. See the strict Staging Sandbox bounds mapped formally in [Wielder Imager & Staging Sandboxing](file:///home/gideon/starget/wielder-antifragile/foundation/skills/wielder/SKILL_WIELDER_IMAGER.md).
 - **Guideline (Workflow Runtime Preference):** For distributed workflow ecosystems, CLI trumps are useful during bootstrap and planning, but runtime components should prefer staged configuration artifacts when native propagation exists. Avoid making container command-line flags the long-term operational source of truth when `context_conf/<name>/developer.conf` or another staged config artifact can be copied into the runtime surface.
+- **Guideline (Accessor Preference):** Strongly suggest resolving application or service configuration through the canonical accessor (`get_app_conf()`, `get_service_conf()`, or peer helpers) rather than manually reconstructing HOCON layers inside leaf scripts.
+- **Guideline (No Parallel Config Boot Paths):** Strongly suggest avoiding "side loaders" that separately read `project.conf`, individual ecosystem manifests, or stage manifests just to recreate one app tree. Those parallel config boot paths drift quickly and tend to break when ecosystem families are refactored.
 
 ### 3. Canonical Structural Mappings over Static Conditionals
 A framework built to handle limitless topologies scales significantly better when deferring to explicitly loaded HOCON schemas rather than evaluating static rules.
@@ -116,6 +118,12 @@ When an application exposes the same capability through both direct API transpor
 - **Guideline:** The direct SDK path MUST call that same side-effect layer rather than simulating a local gRPC roundtrip.
 - **Guideline:** If a producer DAG, an SDK caller, and a direct API surface such as gRPC all expose the same domain capability, they should converge on the same side-effect layer so that canonical external effects are not fragmented across three implementations.
 - **Guideline:** If time and scope were unconstrained, a brokered messaging IO architecture would be the more reactive long-term shape than direct API calls. Until that complexity is justified, keep the present direct API layering explicit and local rather than prematurely splitting into micro-micro services.
+
+### 8.3 Workflow Monitors and Sidecar CLIs
+Operational monitors often need both Wielder topology and a small local action vocabulary. That combination should not create a second configuration language.
+- **Guideline:** Strongly suggest keeping Wielder topology resolution and script-local actions as separate concerns. The script-local action should be narrow and positional, while ecosystem and stage resolution should still come from the canonical config accessors.
+- **Guideline:** Strongly suggest avoiding ad hoc argv rewriting, synthetic parser stacking, or manual flag merging between a local operational CLI and the Wielder CLI surface.
+- **Guideline:** When a script has a single dominant interactive behavior such as traffic monitoring, strongly suggest defaulting direct invocation to that behavior and reserving extra actions for explicit internal calls or clearly separated entrypoints.
 
 ### 9. The `__file__` Context Drift Antipattern
 Legacy python patterns frequently use `os.path.dirname(__file__)` to trace project directories relative to the execution script. In a unified orchestration topology, **this is a catastrophic antipattern**.

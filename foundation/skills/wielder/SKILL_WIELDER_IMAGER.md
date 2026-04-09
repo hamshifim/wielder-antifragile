@@ -22,6 +22,17 @@ To resolve this, the `Wielder` Imager (`pack_image_antifragile`) strictly mandat
 3. **Mandatory Bake Order for Submodules:** If a deployment depends on changes inside a submodule (for example `starget-in-silico`), the correct sequence is: commit the submodule, commit the super-repo pointer update, then bake the image, then deploy. Failing to complete this chain yields stale configs or stale code inside the container even when the local workspace looks correct.
 4. **Decoupling:** Because the staging environment is instantly decoupled from the live code, the developer can instantly return to writing code on the live footprint. The 10-minute Docker daemon build operates silently against the staging clone.
 
+## Workflow-Driven Image Verification
+For workflow entrypoints that both build images and deploy them, the most reliable integration check is the exact workflow itself rather than a disconnected sequence of helper invocations.
+
+For the broader doctrine that treats Wielder workflows as configurable integration, system, load, and production execution surfaces across ecosystems and stage tiers, see [Workflow Validation Guidelines](file:///home/gideon/starget/wielder-antifragile/foundation/skills/wielder/SKILL_WORKFLOW_VALIDATION_GUIDELINES.md).
+
+- **Rule:** The workflow's own `delete -> apply` cycle is the correct integration harness when validating image-bearing changes.
+- **Rule:** Since the Wielder image builder resolves the latest committed super-repo state, the operator should commit the active image-bearing changes in the relevant submodules and commit the super-repo pointer update before wielding the image builder.
+- **Rule:** If a thin deploy-orchestrator repository is not itself part of the baked image, treat its local diff as deployment wiring rather than image truth, and do not confuse those two roles during validation.
+- **Rule:** Keep `imagePullPolicy: Always` on these workflow-managed integration deployments so the deployment actually tests the image that was just baked and pushed.
+- **Rule:** When a workflow `apply` both bakes and deploys, a successful end-to-end `apply` is the primary integration and system proof for that image delta.
+
 ## Explicit Topology over Internal Context
 The sandbox path (e.g., `~/artifacts/starget_base...`) must NEVER be inferred inside the `pack_image` executors using legacy methods like `__file__` or `get_super_project_roots()`.
 The topographical source of truth is exclusively the **PyHocon Configuration Stream**. The Caller Execution Script (`image.py`) securely evaluates the PyHocon context natively and explicitly passes the `conf.super_project_root` into the imager proxy as `staging_root`. This completely centralizes the architectural footprint natively into the PyHocon boundaries, ensuring zero Context Drift for globally installed packages.

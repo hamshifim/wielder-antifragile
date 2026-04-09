@@ -22,6 +22,20 @@ Wielder orchestration scripts shy away from hardcoded directory paths, deeply ne
 * When local development context matters, scripts should rely on the active central `context_conf/<name>/developer.conf` pack rather than repo-local `conf/developer/` overrides or ad hoc CLI flags.
 * For app-local examples, keep tracked packs under `conf/context_conf_examples/<name>/` and keep `conf/context_conf/<name>/` ignored. The human and agent workflow is always: copy an example pack into `conf/context_conf/`, then edit the copied local pack.
 
+## 2.1 Thin Script, Single Loader
+Operational scripts become fragile when they grow a second understanding of configuration structure.
+
+* Strongly suggest resolving application state through the canonical accessor that matches the target domain, rather than re-merging `project.conf`, `ecosystem_manifest.conf`, and `stage_tier` files by hand.
+* Strongly suggest keeping the script thin enough that it owns execution sequencing, not config reconstruction.
+* Strongly suggest avoiding local parser inventions that partially duplicate Wielder behavior, because those forks tend to drift exactly when ecosystem naming or family extraction changes.
+
+## 2.2 Local Script Actions vs Wielder Modes
+Some scripts need a small local command vocabulary in addition to Wielder topology.
+
+* Strongly suggest keeping those local actions narrow and positional while leaving ecosystem and stage resolution to the normal Wielder/config accessor path.
+* Strongly suggest defaulting direct CLI execution to the dominant operational behavior when one obviously exists, rather than multiplexing many loosely maintained modes through one argv surface.
+* Strongly suggest separating internal programmatic action hooks from human-facing shell invocation if a script starts accumulating too many modes.
+
 ## 3. Standalone Invocation Formatting
 Because Wielder evaluation scripts are often automated or executed directly across various shells (WSL, native Linux, CI/CD), they benefit from secure formatting to prevent common shell evaluation traps (e.g., the ImageMagick `import` bash hijacking).
 
