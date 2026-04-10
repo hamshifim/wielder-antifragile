@@ -11,6 +11,8 @@ This is a Wielder-specific expression of a broader distributed-systems doctrine:
 
 One of the main payoffs is delta reduction. The closer the workstation path is to the build, deploy, and DAG-execution path, the smaller the interpretive gap between local development and CI/CD reality.
 
+Wielder is especially strong when used to assemble ephemeral super-clusters: configurable, multi-surface, multi-tier distributed environments that can be created, exercised, observed, and torn down as one workflow family. In development, testing, QA, and staging, that ephemerality is a feature, not a compromise.
+
 ## Core Principle
 
 A workflow entrypoint that resolves topology, builds images, provisions dependencies, deploys services, bridges local access, and runs the target workload should be treated as a unified validation harness.
@@ -42,6 +44,11 @@ The same workflow can be epigenetically phenotyped by configuration across that 
 
 The same family should also support mix-and-match deployment across multi-tiered DAGs, where different tiers, services, and transports are recombined by configuration rather than by inventing a separate workflow for every permutation.
 
+Within that doctrine:
+- `app` is the enduring managed unit in configuration.
+- `deploy` is an operational expression against an app.
+- `workflow` is the orchestrated harness that coordinates multiple apps, dependencies, actors, and teardown behavior across an ephemeral or persistent distributed environment.
+
 ## 1. The Workflow as Test Harness
 
 - **Rule:** A workflow `delete -> apply` cycle is a first-class validation surface, not a secondary convenience wrapper.
@@ -49,6 +56,7 @@ The same family should also support mix-and-match deployment across multi-tiered
 - **Rule:** Down-scaled runs in local or ephemeral ecosystems are not a different category of software truth. They are reduced-scope modulations of the same validation harness.
 - **Rule:** Strong workflow unification reduces the delta from workstation coding, through image build, through CI/CD, into configured DAG execution.
 - **Rule:** A workflow can act as a testing framework when it coordinates active test actors such as publishers and passive or semi-passive observers such as monitors against the same configured environment.
+- **Rule:** An ephemeral super-cluster should be read as a temporary real system slice assembled by the workflow, not as a toy stand-in for the real system.
 
 ## 2. The Workflow as a Scale-Modulated Instrument
 

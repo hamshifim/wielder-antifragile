@@ -6,6 +6,8 @@ description: Wielder PyHocon Configuration Guidelines (Strict Architectural SOP)
 
 The Wielder framework relies on a deterministic and structurally sound configuration layer. As data domains and topologies scale, adherence to these engineering constraints improves maintainability, preserves clear failure boundaries, and supports consistent structural abstraction.
 
+Wielder configuration names enduring managed units as `apps`. A deployment is an operational expression of an app, and a workflow is the orchestrated harness that coordinates many apps, dependencies, and observers. The configuration tree should preserve that distinction clearly.
+
 ---
 
 ## Part 1: The Resolving Configuration Ecology
@@ -56,6 +58,7 @@ Historically, the Wielder architecture minimized CLI bindings to protect the mat
 - **Guideline (Workflow Runtime Preference):** For distributed workflow ecosystems, CLI trumps are useful during bootstrap and planning, but runtime components should prefer staged configuration artifacts when native propagation exists. Avoid making container command-line flags the long-term operational source of truth when `context_conf/<name>/developer.conf` or another staged config artifact can be copied into the runtime surface.
 - **Guideline (Accessor Preference):** Strongly suggest resolving application or service configuration through the canonical accessor (`get_app_conf()`, `get_service_conf()`, or peer helpers) rather than manually reconstructing HOCON layers inside leaf scripts.
 - **Guideline (No Parallel Config Boot Paths):** Strongly suggest avoiding "side loaders" that separately read `project.conf`, individual ecosystem manifests, or stage manifests just to recreate one app tree. Those parallel config boot paths drift quickly and tend to break when ecosystem families are refactored.
+- **Guideline (Notebook Contexts):** Strongly suggest giving notebooks an explicit accessor seam for mode overrides at the same boundary where Wielder normally parses topology, rather than mutating `sys.argv` or trying to inject ecosystem changes after project resolution has already happened.
 
 ### 3. Canonical Structural Mappings over Static Conditionals
 A framework built to handle limitless topologies scales significantly better when deferring to explicitly loaded HOCON schemas rather than evaluating static rules.

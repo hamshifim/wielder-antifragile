@@ -2,6 +2,23 @@
 
 This document states the root-level architectural philosophy of `wielder-antifragile`.
 
+## Front-And-Center Concepts
+
+`wielder-antifragile` treats ephemeral super-clusters as a primary engineering strategy.
+
+An ephemeral super-cluster is a configurable, multi-surface, multi-tier distributed environment that can be provisioned, exercised, observed, and torn down as one coherent workflow family. In development, testing, QA, and staging, this ephemerality reduces the delta between workstation coding, image build, CI/CD, and real distributed execution.
+
+The same machinery can also maintain long-lived production surfaces in situ. The difference is carried by configuration and policy, not by switching to a different architectural species.
+
+## Glossary
+
+- `app`: the enduring managed unit in Wielder configuration. An app can be built, deployed, deleted, rebuilt, monitored, load-tested, or maintained while remaining the same configured unit.
+- `deploy`: an operational expression or action against an app. Deployment is one important manifestation of an app, but it is narrower than the app itself.
+- `workflow`: an orchestrated DAG that coordinates apps, dependencies, publishers, monitors, consumers, provisioning, and teardown.
+- `ecosystem`: the resolved execution topology that determines how surfaces, dependencies, transports, and operational modes cooperate.
+- `surface`: the material execution plane or transport boundary through which a workload or dependency is expressed.
+- `ephemeral super-cluster`: a temporary but real distributed environment assembled from the same workflow family used elsewhere, configured for validation or execution and later torn down when no longer needed.
+
 ## Core Thesis
 
 Wielder workflows are a unified validation, testing, and execution surface for distributed systems.
@@ -38,6 +55,8 @@ One direct consequence is a lower probability of "it worked on my computer" bugs
 The same workflow can be epigenetically phenotyped by configuration into a unit test, an integration test, a system test, or a load test without becoming a different workflow species.
 
 The same doctrine extends to mix-and-match deployment across multi-tiered DAGs. Different tiers, services, and transports can be recombined by configuration while remaining inside the same workflow family.
+
+The same doctrine also explains why Wielder keeps the primary noun as `app`. An app is the enduring managed unit. Deployment is one important operational expression of that app inside an ephemeral or persistent distributed environment.
 
 ## HOCON as the Canonical Tree
 
@@ -79,6 +98,8 @@ This metaphor is useful as intuition, but the mechanism is deterministic. The ph
 A workflow that resolves topology, builds images, provisions dependencies, deploys services, bridges access, and runs the target workload should be treated as a primary harness.
 
 That harness can include active test actors such as publishers as well as observational actors such as monitors. In that sense, the workflow is also a testing framework: it hosts the target system, drives it, and inspects it through the same configured surface.
+
+This is the operational expression of the ephemeral super-cluster idea: the workflow does not just launch isolated deploy artifacts. It assembles a temporary but real distributed system slice that can act as a unit probe, an integration harness, a system test, a load surface, or a production path depending on configuration and policy.
 
 When reproducibility matters, `delete -> apply` is stronger than incremental patching because it proves that the environment can be reconstructed from committed source of truth.
 

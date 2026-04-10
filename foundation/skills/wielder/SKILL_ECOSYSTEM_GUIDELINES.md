@@ -6,6 +6,8 @@ description: Wielder Multi-Surface Ecosystem Architecture Guidelines
 
 The fundamental architectural principle behind the Wielder `ecosystem` framework is to actively facilitate **multi-cloud and multi-surface topologies**. Execution paths natively span across disparate infrastructural foundations without modifying the core business logic.
 
+In Wielder, the primary managed noun remains `app`, not `deployment`. An ecosystem phenotypes apps across surfaces and dependencies. Deployment is one operational expression of an app inside that topology, not the whole identity of the configured unit.
+
 ### 1. The Multi-Surface Abstraction
 Wielder never forces operations to be localized exclusively to one cloud provider or physical machine natively. "Ecosystems" fundamentally decouple the source execution environment (e.g., `local_wsl`, `workstation_mac`) from the target operational endpoints (e.g., `Google Workspace`, `AWS S3`, `GCP Storage`). 
 - **Guideline:** Pipelines and central provisioners MUST actively trace and report explicitly which surface is invoking the logic, and which remote surface is catching the payload. 
@@ -26,6 +28,7 @@ Ecosystems are not merely deployment labels. Their deeper role is to carry the *
 - **Guideline:** Favor ecosystems to express combinations of surfaces. This includes pure local execution, local microservice execution, and future mixed topologies where one dependency remains local while another resolves against a remote surface.
 - **Guideline:** A local-first base ecosystem is valid and often preferable during active development. Additional ecosystems may then layer service-oriented or hybrid variants without forcing application business logic to absorb deployment details.
 - **Guideline:** Application code should read the already-resolved topology from the ecosystem configuration and branch at the transport boundary only. Scientific DAG payloads should not be overloaded with infrastructure routing concerns.
+- **Guideline:** Ecosystems are one of the main tools for assembling ephemeral super-clusters. They express how real distributed surfaces cooperate during temporary validation or execution environments without requiring a separate workflow species for each cluster shape.
 
 ### 5. Workflow Contracts and Ecosystem Ownership
 Messaging topics, consumer groups, and similar workflow orchestration contracts should not default to project-global scope.
