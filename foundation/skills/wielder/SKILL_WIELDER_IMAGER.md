@@ -21,6 +21,7 @@ To resolve this, the `Wielder` Imager (`pack_image_antifragile`) strictly mandat
 2. **Committed Super-Repo Determinism:** In a Git super-repo with submodules, image baking must be treated as a committed-state operation unless the imager is explicitly proven to stage live workspace state. If the image is sourced through the super-repo tree, the bake will reflect the committed submodule revision and the committed super-repo pointer, not merely the editor buffer.
 3. **Mandatory Bake Order for Submodules:** If a deployment depends on changes inside a submodule (for example `starget-in-silico`), the correct sequence is: commit the submodule, commit the super-repo pointer update, then bake the image, then deploy. Failing to complete this chain yields stale configs or stale code inside the container even when the local workspace looks correct.
 4. **Decoupling:** Because the staging environment is instantly decoupled from the live code, the developer can instantly return to writing code on the live footprint. The 10-minute Docker daemon build operates silently against the staging clone.
+5. **Live Runtime Verification over Assumption:** A successful config render or `kubectl apply` is not proof that the new image behavior is live. If the image tag is unchanged or the staged content still points at committed state, the running container may still reflect older code. Verify with live pod logs and rollout state rather than assuming the workspace diff reached the container.
 
 ## Workflow-Driven Image Verification
 For workflow entrypoints that both build images and deploy them, the most reliable integration check is the exact workflow itself rather than a disconnected sequence of helper invocations.
@@ -32,6 +33,7 @@ For the broader doctrine that treats Wielder workflows as configurable integrati
 - **Rule:** If a thin deploy-orchestrator repository is not itself part of the baked image, treat its local diff as deployment wiring rather than image truth, and do not confuse those two roles during validation.
 - **Rule:** Keep `imagePullPolicy: Always` on these workflow-managed integration deployments so the deployment actually tests the image that was just baked and pushed.
 - **Rule:** When a workflow `apply` both bakes and deploys, a successful end-to-end `apply` is the primary integration and system proof for that image delta.
+- **Rule:** When a rollout fails after an apparently correct config change, compare the resolved config, the applied Deployment manifest, and the live pod log. If the live pod behavior still matches the old code path, suspect stale committed image content before inventing new topology hacks.
 
 ## Explicit Topology over Internal Context
 The sandbox path (e.g., `~/artifacts/starget_base...`) must NEVER be inferred inside the `pack_image` executors using legacy methods like `__file__` or `get_super_project_roots()`.

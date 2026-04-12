@@ -41,6 +41,7 @@ Cross-project orchestration may need to tell multiple downstream apps which ecos
 - **Guideline:** Strongly suggest using app-specific override names such as `app_ecosystem_mmseqs_sequence_alignment` when a config may route multiple downstream apps.
 - **Guideline:** Strongly suggest avoiding generic names such as `app_ecosystem` in multi-app orchestration layers, because they tend to hide which downstream runtime is being modulated.
 - **Guideline:** Strongly suggest avoiding self-referential assignments where an ecosystem overlay redundantly sets an app-specific ecosystem field to the exact same ecosystem name as the containing overlay, unless that duplication is deliberately carrying review signal.
+- **Guideline (No Cross-Ecosystem Band-Aids):** Strongly suggest avoiding app-specific ecosystem overrides as a patch for incomplete concrete ecosystems. If `k3d_protenix_binding` is the bootable ecosystem, the downstream app should run under `k3d_protenix_binding`, not be silently redirected to `docker_kube_protenix_binding` just to compensate for a missing port, host, or probe fact.
 
 ### 7. Family Ecosystems vs Bootable Runtime Ecosystems
 Thin reusable ecosystem families and concrete bootable ecosystems are related, but they are not the same thing.
@@ -48,6 +49,8 @@ Thin reusable ecosystem families and concrete bootable ecosystems are related, b
 - **Guideline:** Strongly suggest using `app_ecosystem_<app_name>` as the explicit bridge when a concrete deploy ecosystem needs to adapt a downstream app onto a different bootable runtime ecosystem.
 - **Guideline:** Strongly suggest avoiding the temptation to point a downstream runtime directly at an abstract family ecosystem unless that family has intentionally been made bootable and verified end to end.
 - **Guideline:** When a family ecosystem exists alongside thin concrete ecosystems, strongly suggest keeping the concrete ecosystems responsible for operational facts such as registry authority, kube context, pull behavior, and downstream runtime bridging.
+- **Guideline (Complete Bootable Ecosystems):** A concrete bootable ecosystem must be complete for the apps it claims to run. If a concrete ecosystem cannot launch a service end to end without redirecting that service into another concrete ecosystem, then the first ecosystem is incomplete and should be repaired rather than bypassed.
+- **Guideline (Operational Facts Stay Local):** In-container bind ports, service hosts, NodePorts, port-forwards, registry authorities, and probe coordinates are operational facts. They must be made explicit inside the concrete bootable ecosystem or the deploy contract around it, not hidden by mixing two concrete ecosystems together.
 
 ### 8. Thin Concrete Ecosystems
 Once a shared family ecosystem has been extracted, the remaining concrete ecosystems should stay obvious and reviewable.
