@@ -28,6 +28,9 @@ Operational scripts become fragile when they grow a second understanding of conf
 * Strongly suggest resolving application state through the canonical accessor that matches the target domain, rather than re-merging `project.conf`, `ecosystem_manifest.conf`, and `stage_tier` files by hand.
 * Strongly suggest keeping the script thin enough that it owns execution sequencing, not config reconstruction.
 * Strongly suggest avoiding local parser inventions that partially duplicate Wielder behavior, because those forks tend to drift exactly when ecosystem naming or family extraction changes.
+* When a script must orchestrate a child repo, strongly suggest loading that child repo through the child repo's own canonical accessor rather than inventing a second local reader.
+* Strongly suggest treating such cross-repo access as explicit dependency wiring, not as a generic framework feature. The script should read foreign owned fields, not absorb the foreign app's whole config identity.
+* If the bridge logic is only a few lines, keep it WET and local on purpose. A garden of tiny explicit bridges is healthier than a premature generic loader that hides ownership.
 
 ## 2.2 Local Script Actions vs Wielder Modes
 Some scripts need a small local command vocabulary in addition to Wielder topology.

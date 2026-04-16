@@ -60,6 +60,12 @@ When an internal Application builds on a platform Base Image, it mathematically 
 - **Rule:** Those environment variables should not become the preferred execution source of truth if the workflow can instead stage a native configuration artifact such as `context_conf/<name>/developer.conf` into the runtime surface.
 - **Rule:** For workflow ecosystems, prefer copying the staged configuration artifact after clone/update over permanently depending on deploy-time CLI mode injection inside container commands.
 
+### 5. Foreign-Owned Image Contracts
+- **Rule:** If an image wrapper in the orchestrating repo bakes code owned by a child repo, the image metadata and docker context path should come from the child repo's canonical app conf, not from ad hoc local reconstruction.
+- **Rule:** The orchestrator conf and the foreign image-owner conf serve different roles. Keep execution identity, topology, and tagging in the local caller conf; keep image-owned fields such as `dockerfile_dir`, `repository_name`, and base-image relationships in the foreign owner conf.
+- **Rule:** Do not merge the entire foreign app conf into the local execution conf to make image fields "available." Read the foreign owned image subtree and pass it explicitly into the imager seam.
+- **Rule:** If each `<app>_image.py` already knows which foreign app it wields, let that leaf module import the foreign repo's canonical accessor directly and keep the bridge thin and explicit.
+
 ---
 
 # Wielder `image.py` Naming Convention
