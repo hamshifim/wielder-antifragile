@@ -39,6 +39,14 @@ Some scripts need a small local command vocabulary in addition to Wielder topolo
 * Strongly suggest defaulting direct CLI execution to the dominant operational behavior when one obviously exists, rather than multiplexing many loosely maintained modes through one argv surface.
 * Strongly suggest separating internal programmatic action hooks from human-facing shell invocation if a script starts accumulating too many modes.
 
+## 2.3 Granular Apply/Delete Control
+Deployment workflows frequently need asymmetric behavior between `apply` and `delete`. A step that is desirable during bring-up is often dangerous or wasteful during teardown.
+
+* Strongly suggest keeping `apply`/bring-up controls in a dedicated `deploy_steps` block and `delete`/teardown controls in a separate `delete_steps` block rather than reusing one boolean family for both directions.
+* Strongly suggest making delete behavior explicitly voidable at the config layer. If a workflow should preserve third-party services, topics, port-forwards, or infrastructure during delete, that decision should be expressed in `delete_steps`, not hardcoded in the script.
+* Strongly suggest letting the script branch on `WieldAction` and then read the matching config family, rather than treating `delete` as a blind inversion of `apply`.
+* When a deploy script orchestrates several resources, strongly suggest exposing delete granularity per resource class such as third-party services, topics, local port-forwards, workload services, and infrastructure.
+
 ## 3. Standalone Invocation Formatting
 Because Wielder evaluation scripts are often automated or executed directly across various shells (WSL, native Linux, CI/CD), they benefit from secure formatting to prevent common shell evaluation traps (e.g., the ImageMagick `import` bash hijacking).
 
