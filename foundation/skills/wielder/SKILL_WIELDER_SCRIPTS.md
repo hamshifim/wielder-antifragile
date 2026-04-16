@@ -28,6 +28,9 @@ Operational scripts become fragile when they grow a second understanding of conf
 * Strongly suggest resolving application state through the canonical accessor that matches the target domain, rather than re-merging `project.conf`, `ecosystem_manifest.conf`, and `stage_tier` files by hand.
 * Strongly suggest keeping the script thin enough that it owns execution sequencing, not config reconstruction.
 * Strongly suggest avoiding local parser inventions that partially duplicate Wielder behavior, because those forks tend to drift exactly when ecosystem naming or family extraction changes.
+* When a script must orchestrate a child repo, strongly suggest loading that child repo through the child repo's own canonical accessor rather than inventing a second local reader.
+* Strongly suggest treating such cross-repo access as explicit dependency wiring, not as a generic framework feature. The script should read foreign owned fields, not absorb the foreign app's whole config identity.
+* If the bridge logic is only a few lines, keep it WET and local on purpose. A garden of tiny explicit bridges is healthier than a premature generic loader that hides ownership.
 
 ## 2.2 Local Script Actions vs Wielder Modes
 Some scripts need a small local command vocabulary in addition to Wielder topology.
@@ -35,6 +38,14 @@ Some scripts need a small local command vocabulary in addition to Wielder topolo
 * Strongly suggest keeping those local actions narrow and positional while leaving ecosystem and stage resolution to the normal Wielder/config accessor path.
 * Strongly suggest defaulting direct CLI execution to the dominant operational behavior when one obviously exists, rather than multiplexing many loosely maintained modes through one argv surface.
 * Strongly suggest separating internal programmatic action hooks from human-facing shell invocation if a script starts accumulating too many modes.
+
+## 2.3 Granular Apply/Delete Control
+Deployment workflows frequently need asymmetric behavior between `apply` and `delete`. A step that is desirable during bring-up is often dangerous or wasteful during teardown.
+
+* Strongly suggest keeping `apply`/bring-up controls in a dedicated `deploy_steps` block and `delete`/teardown controls in a separate `delete_steps` block rather than reusing one boolean family for both directions.
+* Strongly suggest making delete behavior explicitly voidable at the config layer. If a workflow should preserve third-party services, topics, port-forwards, or infrastructure during delete, that decision should be expressed in `delete_steps`, not hardcoded in the script.
+* Strongly suggest letting the script branch on `WieldAction` and then read the matching config family, rather than treating `delete` as a blind inversion of `apply`.
+* When a deploy script orchestrates several resources, strongly suggest exposing delete granularity per resource class such as third-party services, topics, local port-forwards, workload services, and infrastructure.
 
 ## 3. Standalone Invocation Formatting
 Because Wielder evaluation scripts are often automated or executed directly across various shells (WSL, native Linux, CI/CD), they benefit from secure formatting to prevent common shell evaluation traps (e.g., the ImageMagick `import` bash hijacking).
