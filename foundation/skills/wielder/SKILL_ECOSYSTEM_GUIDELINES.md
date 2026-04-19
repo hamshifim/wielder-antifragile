@@ -67,3 +67,5 @@ For local WSL development of GPU-bound services, the cluster surface should be c
 - **Guideline:** Strongly suggest using direct image loading such as `kind load docker-image` for the local loop instead of forcing a registry-mediated hop when the goal is fast local service iteration.
 - **Guideline:** Strongly suggest reserving `k3d` for cases where its built-in registry model is itself under test or when the workload is light enough that the extra push/pull churn is negligible.
 - **Guideline:** Treat WSL virtual disk expansion and layer churn as first-class operational constraints. For local GPU work, storage pressure can be the decisive failure mode even when Kubernetes CPU and memory remain mostly idle.
+- **Guideline:** Treat deprovisioning on WSL as a two-phase operation: first delete clusters, images, and caches inside Linux, then compact the backing WSL VHDX from Windows if host disk pressure remains high.
+- **Guideline:** Strongly suggest using the runtime toolkit's Windows-side WSL compaction helper after heavy Docker churn rather than assuming Linux-side deletion will immediately shrink the host `.vhdx`.
