@@ -23,6 +23,7 @@ To resolve this, the `Wielder` Imager (`pack_image_antifragile`) strictly mandat
 4. **Build-Context Overlays:** Non-versioned local inputs that must enter the Docker context, such as a `context_conf` pack, belong in explicit build-context overlays. The imager should preflight these paths during `plan` and fail immediately if a declared source path does not exist.
 5. **Decoupling:** Because the staging environment is instantly decoupled from the live code, the developer can instantly return to writing code on the live footprint. The Docker daemon build operates silently against the staging clone.
 6. **Live Runtime Verification over Assumption:** A successful config render or `kubectl apply` is not proof that the new image behavior is live. If the image tag is unchanged or the staged content still points at committed state, the running container may still reflect older code. Verify with live pod logs and rollout state rather than assuming the workspace diff reached the container.
+7. **Dirty Staging Clone Policy:** If an already-existing staging clone is dirty, emit a warning and leave it alone. Do not hard-reset or clean the staging clone automatically. The contract is that uncommitted source-repo changes do not reach staging; staging is not a place to silently destroy local state.
 
 ## Workflow-Driven Image Verification
 For workflow entrypoints that both build images and deploy them, the most reliable integration check is the exact workflow itself rather than a disconnected sequence of helper invocations.

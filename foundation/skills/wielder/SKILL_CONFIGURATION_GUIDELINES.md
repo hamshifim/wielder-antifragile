@@ -49,6 +49,15 @@ The evaluation hierarchy relies on object-tree merging priorities. Overrides ele
 Configuration dependencies should guide the execution toward immediate awareness if environment parameters are missing.
 - **Guideline:** Avoid wrapping configuration extraction blocks in generic `try...except Exception` silencing patterns. 
 - **Guideline:** Prefer extracting properties natively via dot-notation (e.g., `conf.ecosystem`). Allow PyHocon to natively trigger a `ConfigMissingException` or `AttributeError` trace upon failure. Suppressing missing configurations obscures orchestration defects.
+- **Guideline (Numeric-Looking String YAML Emission):** When a value must remain a string inside Kubernetes `ConfigMap.data`, plain HOCON substitution may still be emitted by `Wielder`'s `HOCONConverter` as a bare YAML scalar if the value looks numeric. The source value should still be typed as a string first. If the generated YAML still comes out unquoted, use the escaped-quote adjacency form at the HOCON leaf:
+  ```hocon
+  AWS_ACCOUNT_ID = "\""${aws_account_id}"\""
+  ```
+  This is not the default pattern for normal string composition. It is a targeted YAML-emission workaround. Always verify the staged plan file contains a quoted YAML scalar such as:
+  ```yaml
+  AWS_ACCOUNT_ID: "123456789012"
+  ```
+  before applying to Kubernetes.
 
 ### 2. The Evaluation Trump Model (Ingrained CLI Architecture)
 Historically, the Wielder architecture minimized CLI bindings to protect the mathematical purity of the `.conf` file. However, structurally isolating the CLI from the PyHocon loader creates catastrophic Execution Fragmentation (the "Splintering Source of Truth") where scripts evaluate configurations differently depending on how they were executed.
