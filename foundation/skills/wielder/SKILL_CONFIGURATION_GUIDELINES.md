@@ -49,6 +49,7 @@ The evaluation hierarchy relies on object-tree merging priorities. Overrides ele
 Configuration dependencies should guide the execution toward immediate awareness if environment parameters are missing.
 - **Guideline:** Avoid wrapping configuration extraction blocks in generic `try...except Exception` silencing patterns. 
 - **Guideline:** Prefer extracting properties natively via dot-notation (e.g., `conf.ecosystem`). Allow PyHocon to natively trigger a `ConfigMissingException` or `AttributeError` trace upon failure. Suppressing missing configurations obscures orchestration defects.
+- **Guideline (Loader-Bound Derived Paths):** If the bootloader necessarily computes framework paths such as `conf_root`, `context_conf_root`, `ephemeral_conf_path`, or `developer_conf_path`, inject those concrete values into the resolved configuration exactly once and make downstream code read them by strict attribute access. Do not add narrow convenience paths to broad project/domain HOCON solely because one caller needs them, and do not recompute those paths inside application code after config resolution.
 - **Guideline (Numeric-Looking String YAML Emission):** When a value must remain a string inside Kubernetes `ConfigMap.data`, plain HOCON substitution may still be emitted by `Wielder`'s `HOCONConverter` as a bare YAML scalar if the value looks numeric. The source value should still be typed as a string first. If the generated YAML still comes out unquoted, use the escaped-quote adjacency form at the HOCON leaf:
   ```hocon
   AWS_ACCOUNT_ID = "\""${aws_account_id}"\""
