@@ -41,7 +41,7 @@ Cross-project orchestration may need to tell multiple downstream apps which ecos
 - **Guideline:** Strongly suggest using app-specific override names such as `app_ecosystem_mmseqs_sequence_alignment` when a config may route multiple downstream apps.
 - **Guideline:** Strongly suggest avoiding generic names such as `app_ecosystem` in multi-app orchestration layers, because they tend to hide which downstream runtime is being modulated.
 - **Guideline:** Strongly suggest avoiding self-referential assignments where an ecosystem overlay redundantly sets an app-specific ecosystem field to the exact same ecosystem name as the containing overlay, unless that duplication is deliberately carrying review signal.
-- **Guideline (No Cross-Ecosystem Band-Aids):** Strongly suggest avoiding app-specific ecosystem overrides as a patch for incomplete concrete ecosystems. If `k3d_protenix_binding` is the bootable ecosystem, the downstream app should run under `k3d_protenix_binding`, not be silently redirected to `docker_kube_protenix_binding` just to compensate for a missing port, host, or probe fact.
+- **Guideline (No Cross-Ecosystem Band-Aids):** Strongly suggest avoiding app-specific ecosystem overrides as a patch for incomplete concrete ecosystems. If a concrete ecosystem is the bootable runtime, the downstream app should run under that same concrete ecosystem, not be silently redirected into some other local surface just to compensate for a missing port, host, or probe fact.
 
 ### 7. Family Ecosystems vs Bootable Runtime Ecosystems
 Thin reusable ecosystem families and concrete bootable ecosystems are related, but they are not the same thing.
@@ -57,3 +57,15 @@ Once a shared family ecosystem has been extracted, the remaining concrete ecosys
 - **Guideline:** Strongly suggest consolidating concrete override ecosystems into a single `ecosystem_manifest.conf` when their remaining role is to override a small set of operational facts.
 - **Guideline:** Strongly suggest deleting empty or misleading concrete override fragments once their contents have been centralized, rather than preserving them as ceremonial files.
 - **Guideline:** Strongly suggest keeping deployment-resource ordering and Kubernetes object lists at the deployment layer, not inside ecosystem overlays, even when those ecosystems become very thin.
+
+### 9. Local WSL GPU Cluster Choice
+For local WSL development of GPU-bound services, the cluster surface should be chosen with image-ingestion behavior in mind, not only conceptual Kubernetes symmetry.
+- **Guideline:** Strongly suggest avoiding Windows-hosted Docker Desktop plus WSL as the primary GPU container surface for local development. The Windows/WSL hybrid boundary adds failure modes around GPU handoff, storage churn, and virtual disk growth.
+- **Guideline:** Strongly suggest installing Docker and the NVIDIA container stack directly inside the Linux WSL distro through the sanctioned repo scripts rather than relying on the Windows Docker Desktop daemon.
+- **Guideline:** The sanctioned local install path is a Linux-side Docker and NVIDIA bootstrap script owned by the runtime toolkit itself, not a Windows-hosted Docker Desktop surface.
+- **Guideline:** Strongly suggest preferring `kind` over `k3d` as the default local Kubernetes surface for GPU-bound, image-heavy iteration on WSL.
+- **Guideline:** Strongly suggest using direct image loading such as `kind load docker-image` for the local loop instead of forcing a registry-mediated hop when the goal is fast local service iteration.
+- **Guideline:** Strongly suggest reserving `k3d` for cases where its built-in registry model is itself under test or when the workload is light enough that the extra push/pull churn is negligible.
+- **Guideline:** Treat WSL virtual disk expansion and layer churn as first-class operational constraints. For local GPU work, storage pressure can be the decisive failure mode even when Kubernetes CPU and memory remain mostly idle.
+- **Guideline:** Treat deprovisioning on WSL as a two-phase operation: first delete clusters, images, and caches inside Linux, then compact the backing WSL VHDX from Windows if host disk pressure remains high.
+- **Guideline:** Strongly suggest using the runtime toolkit's Windows-side WSL compaction helper after heavy Docker churn rather than assuming Linux-side deletion will immediately shrink the host `.vhdx`.

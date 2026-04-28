@@ -68,8 +68,9 @@ Within that doctrine:
 
 ## 3. Image-Bearing Determinism
 
-- **Rule:** When a workflow `apply` bakes images, it should be treated as a committed-state operation.
-- **Rule:** Since the Wielder image builder resolves the latest committed super-repo state, the active image-bearing changes should be committed in the relevant submodules and the super-repo pointer should be committed before wielding the image builder.
+- **Rule:** When a workflow `apply` bakes images, it should be treated as a committed-state operation keyed by one final committed super-repo SHA.
+- **Rule:** If a deployment depends on changes inside a submodule, the correct sequence is: commit the submodule changes, commit the super-repo pointer update, then build and push the image, then deploy.
+- **Rule:** The deployment identity is the final committed super-repo SHA, because that SHA captures the tracked submodule pointers that define the image content. Build, push, and deploy must all resolve against that same SHA.
 - **Rule:** If a repository participates only as thin deploy wiring and is not part of the baked image, its local diff should not be mistaken for image truth.
 - **Rule:** `imagePullPolicy: Always` is the correct default for workflow-managed validation deployments when the objective is to exercise the exact image that was just built and pushed.
 - **Rule:** Rollback is achieved through super-repo commit history. A single supermodule commit hash acts as a version boundary because it captures the tracked submodule pointers that define the rebuildable distributed state.

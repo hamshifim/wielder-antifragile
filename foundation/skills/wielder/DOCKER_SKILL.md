@@ -12,9 +12,10 @@ The main lesson is simple:
   - WSL memory budget
   - Windows disk pressure
   - buildx health
-  - cache and volume footprint
+- cache and volume footprint
+- WSL VHD compaction behavior on the Windows host
 
-On this Starget workstation, the important observed facts were:
+On this workstation, the important observed facts were:
 
 - Docker only saw `8` CPUs and about `7.8 GiB` RAM
 - Windows `C:` was `94%` full
@@ -95,10 +96,31 @@ Important:
 
 So before aggressive pruning, decide what "using now" means.
 
-For Starget, a good rule is:
+For a local GPU workflow, a good rule is:
 
 - keep the current k3d cluster infrastructure
-- optionally keep the current `starget_base` and `mmseqs_sequence_alignment` images if you expect to reuse them soon
+- optionally keep the current base and service images if you expect to reuse them soon
+
+## WSL Disk Reclaim
+
+Deleting images and clusters inside WSL does not guarantee that Windows immediately recovers the backing disk space. The Linux filesystem may be clean while the host-side `.vhdx` remains inflated.
+
+Use a two-phase cleanup model:
+
+1. Clean Docker, caches, and clusters inside WSL.
+2. From elevated PowerShell on Windows, compact the WSL VHDX.
+
+Use the runtime toolkit helper:
+
+```powershell
+& "$HOME\starget\Wielder\wielder\scripts\compact_wsl_vhd.ps1" -DistroName Ubuntu
+```
+
+Important:
+
+- run it from elevated PowerShell
+- ensure `wsl --shutdown` succeeds
+- avoid relaunching Docker Desktop or a WSL shell during compaction
 
 ## Resource Tuning From Windows PowerShell
 

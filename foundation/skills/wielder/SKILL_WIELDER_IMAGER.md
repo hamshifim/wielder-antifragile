@@ -18,10 +18,12 @@ To resolve this, the `Wielder` Imager (`pack_image_antifragile`) strictly mandat
 
 ### Execution Rules
 1. **Snapshotting:** Before `docker build` is called, a fast `shutil.copytree` (ignoring `.git`, `__pycache__`, and IDE `.idea` bloat) replicates the active, necessary modules into a UUID-isolated `/artifacts` temporary directory.
-2. **Committed Super-Repo Determinism:** In a Git super-repo with submodules, image baking must be treated as a committed-state operation unless the imager is explicitly proven to stage live workspace state. If the image is sourced through the super-repo tree, the bake will reflect the committed submodule revision and the committed super-repo pointer, not merely the editor buffer.
-3. **Mandatory Bake Order for Submodules:** If a deployment depends on changes inside a submodule (for example `starget-in-silico`), the correct sequence is: commit the submodule, commit the super-repo pointer update, then bake the image, then deploy. Failing to complete this chain yields stale configs or stale code inside the container even when the local workspace looks correct.
-4. **Decoupling:** Because the staging environment is instantly decoupled from the live code, the developer can instantly return to writing code on the live footprint. The 10-minute Docker daemon build operates silently against the staging clone.
-5. **Live Runtime Verification over Assumption:** A successful config render or `kubectl apply` is not proof that the new image behavior is live. If the image tag is unchanged or the staged content still points at committed state, the running container may still reflect older code. Verify with live pod logs and rollout state rather than assuming the workspace diff reached the container.
+2. **Committed Super-Repo Determinism:** In a Git super-repo with submodules, image baking must be treated as a committed-state operation keyed by one final committed super-repo SHA. If the image is sourced through the super-repo tree, the bake reflects the committed submodule revisions captured by that super-repo SHA, not merely the editor buffer.
+3. **Mandatory Bake Order for Submodules:** If a deployment depends on changes inside a submodule (for example `starget-in-silico`), the correct sequence is: commit the submodule changes, commit the super-repo pointer update, then bake and push the image, then deploy. Failing to complete this chain yields stale configs or stale code inside the container even when the local workspace looks correct.
+4. **Build-Context Overlays:** Non-versioned local inputs that must enter the Docker context, such as a `context_conf` pack, belong in explicit build-context overlays. The imager should preflight these paths during `plan` and fail immediately if a declared source path does not exist.
+5. **Decoupling:** Because the staging environment is instantly decoupled from the live code, the developer can instantly return to writing code on the live footprint. The Docker daemon build operates silently against the staging clone.
+6. **Live Runtime Verification over Assumption:** A successful config render or `kubectl apply` is not proof that the new image behavior is live. If the image tag is unchanged or the staged content still points at committed state, the running container may still reflect older code. Verify with live pod logs and rollout state rather than assuming the workspace diff reached the container.
+7. **Dirty Staging Clone Policy:** If an already-existing staging clone is dirty, emit a warning and leave it alone. Do not hard-reset or clean the staging clone automatically. The contract is that uncommitted source-repo changes do not reach staging; staging is not a place to silently destroy local state.
 
 ## Workflow-Driven Image Verification
 For workflow entrypoints that both build images and deploy them, the most reliable integration check is the exact workflow itself rather than a disconnected sequence of helper invocations.
@@ -29,7 +31,7 @@ For workflow entrypoints that both build images and deploy them, the most reliab
 For the broader doctrine that treats Wielder workflows as configurable integration, system, load, and production execution surfaces across ecosystems and stage tiers, see [Workflow Validation Guidelines](file:///home/gideon/starget/wielder-antifragile/foundation/skills/wielder/SKILL_WORKFLOW_VALIDATION_GUIDELINES.md).
 
 - **Rule:** The workflow's own `delete -> apply` cycle is the correct integration harness when validating image-bearing changes.
-- **Rule:** Since the Wielder image builder resolves the latest committed super-repo state, the operator should commit the active image-bearing changes in the relevant submodules and commit the super-repo pointer update before wielding the image builder.
+- **Rule:** The deployment identity is the final committed super-repo SHA. Build, push, and deploy must all resolve against that same SHA.
 - **Rule:** If a thin deploy-orchestrator repository is not itself part of the baked image, treat its local diff as deployment wiring rather than image truth, and do not confuse those two roles during validation.
 - **Rule:** Keep `imagePullPolicy: Always` on these workflow-managed integration deployments so the deployment actually tests the image that was just baked and pushed.
 - **Rule:** When a workflow `apply` both bakes and deploys, a successful end-to-end `apply` is the primary integration and system proof for that image delta.
@@ -41,8 +43,14 @@ The topographical source of truth is exclusively the **PyHocon Configuration Str
 
 ---
 
-# Image Modulation & Topographical Modes
-To ensure images seamlessly adapt to the surfaces they land on, Docker tags strictly obey native PyHocon runtime boundaries.
+# Image Surfaces & Topological Modes
+To ensure images adapt coherently to the topology they land on, image orchestration must distinguish three different surfaces.
+
+- **Build Surface:** Where the image is built. This is a detected local fact, not an ecosystem intention. Typical examples are `local_docker_wsl_native_ubuntu`, `local_docker_wsl_docker_desktop`, `local_docker_ubuntu`, `local_docker_macos_arm64`, and `local_docker_macos_amd64`.
+- **Registry Surface:** Where the image is pushed and from where workloads pull it. `kind_registry`, `k3d_registry`, and `aws_ecr` are distinct operational topologies and must not be collapsed into one generic "registry."
+- **Runtime Surface:** Where the workload actually runs. Typical examples are `kind`, `k3d`, and `aws`.
+
+The client config should declare the registry and runtime surfaces explicitly. The build surface should be detected at runtime by inspecting the real local Docker topology and fail closed on unknown or ambiguous combinations.
 
 ### 1. Dynamic Mode Tagging
 Container tags must fundamentally flex against the terminal topology (e.g., inheriting `stage_tier` to dynamically shift between `:dev` and `:prod`).
@@ -57,10 +65,14 @@ When an internal Application builds on a platform Base Image, it mathematically 
 
 ### 4. Runtime Mode Propagation
 - **Rule:** It is acceptable and often useful to mirror resolved topological modes such as `ECOSYSTEM` and `STAGE_TIER` into container environment variables for telemetry, inspection, and forensic replay.
-- **Rule:** Those environment variables should not become the preferred execution source of truth if the workflow can instead stage a native configuration artifact such as `context_conf/<name>/developer.conf` into the runtime surface.
-- **Rule:** For workflow ecosystems, prefer copying the staged configuration artifact after clone/update over permanently depending on deploy-time CLI mode injection inside container commands.
+- **Rule:** Those variables are transport, not source of truth. Prefer the pattern `ConfigMap -> env -> run.sh -> CLI -> canonical accessor` over deep Python logic reading `os.environ` as an independent config system.
+- **Rule:** If a workflow depends on local context packs such as `developer.conf` and `workflow_runs.conf`, stage the relevant `context_conf` tree into the build context explicitly rather than recreating configuration ad hoc inside the container.
 
-### 5. Foreign-Owned Image Contracts
+### 5. Plan Behavior
+- **Rule:** Workflow image `plan` should validate declared build inputs and print the intended image operations without paying the full cost of sandbox staging and git-bound cloning.
+- **Rule:** `apply` remains the path that performs full staging, build, optional push, and runtime distribution.
+
+### 6. Foreign-Owned Image Contracts
 - **Rule:** If an image wrapper in the orchestrating repo bakes code owned by a child repo, the image metadata and docker context path should come from the child repo's canonical app conf, not from ad hoc local reconstruction.
 - **Rule:** The orchestrator conf and the foreign image-owner conf serve different roles. Keep execution identity, topology, and tagging in the local caller conf; keep image-owned fields such as `dockerfile_dir`, `repository_name`, and base-image relationships in the foreign owner conf.
 - **Rule:** Do not merge the entire foreign app conf into the local execution conf to make image fields "available." Read the foreign owned image subtree and pass it explicitly into the imager seam.

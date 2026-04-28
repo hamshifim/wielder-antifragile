@@ -88,6 +88,14 @@ PYTHONPATH=src python -c "from wielder_antifragile.personas.object import Person
 - [Implementation Architecture](docs/implementation-architecture.md)
 - [Ephemeral Super Cluster Architecture](docs/ephemeral-super-cluster-wielder.md)
 
+## Local GPU Surface Heuristic
+
+For local WSL development of GPU-bound services, strongly prefer `kind` as the default Kubernetes surface.
+
+- `kind` plus direct `kind load docker-image` is usually the more stable local loop for large CUDA images.
+- `k3d` adds a registry hop that may be acceptable for lightweight services or registry-realistic checks, but it is often the wrong default for image-heavy GPU iteration on WSL.
+- The local failure mode to watch is storage churn and virtual disk expansion, not just scheduler CPU or memory pressure.
+
 ## Local Context Packs
 
 Tracked example context packs belong in:
