@@ -16,17 +16,20 @@ To ensure architectural alignment across varying Python execution environments a
 4. **[Interactive Notebook Hygiene](../../skills/wielder/SKILL_NOTEBOOK_GUIDELINES.md)**  
    *Scope:* Banning multi-display DOM memory leaks, `# %%` script duality parsing, and the fundamental rejection of defensive error wrappers (`if not df.empty`) inside Jupyter analytical cells.
 
-5. **[Live Quality Assurance Testing](../../skills/wielder/SKILL_TEST_GUIDELINES.md)**  
+5. **[Raw Data Ingestion Tiering](../../skills/wielder/SKILL_DATA_INGESTION_GUIDELINES.md)**  
+   *Scope:* Separating reusable protocol, transient experiment metadata, and empirical measurements; hashing protocol drift; keeping audit leftovers distinct from raw data tiers.
+
+6. **[Live Quality Assurance Testing](../../skills/wielder/SKILL_TEST_GUIDELINES.md)**  
    *Scope:* Mandating Live Endpoint validations over `unittest.mock` illusions, asserting PySpark O(1) dimensionality querying mathematically, and securely abstracting physical image sink footprints into the `/tmp/` git-ignored ether.
 
-6. **[Domain Scope & Boundary Preservation Constants](../../skills/wielder/SKILL_SCOPE_GUIDELINES.md)**  
+7. **[Domain Scope & Boundary Preservation Constants](../../skills/wielder/SKILL_SCOPE_GUIDELINES.md)**  
    *Scope:* Eradicating scope creep, isolating execution pipelines to assigned architectures, enforcing "Einstein Simplicity," and explicitly acknowledging Epistemic Humility (probabilistic fault models vs absolute "hubristic" guarantees).
 
-7. **[Stepping Stone Parcelling Strategy](../../skills/wielder/SKILL_PARCELLING_GUIDELINES.md)**  
+8. **[Stepping Stone Parcelling Strategy](../../skills/wielder/SKILL_PARCELLING_GUIDELINES.md)**  
    *Scope:* Forbidding massive multi-file refactors. Dictating that tasks must execute incrementally via distinct, test-gated "Stepping Stones" that deliberately sequence the builder-to-skeptic AI handoff workflow with explicit handoff boundaries.
 
-8. **[Handoff Protocol & Reporting](../../contracts/handoffs/SKILL_HANDOFF_PROTOCOL.md)**  
+9. **[Handoff Protocol & Reporting](../../contracts/handoffs/SKILL_HANDOFF_PROTOCOL.md)**  
    *Scope:* Formalizing the structured communication standard (Blue Team Proof vs Red Team Report) that must be passed natively between Personas during context wiping to ensure execution tracing is never hallucinated.
 
-9. **[Yoda-Led Jedi Council](../../skills/wielder/SKILL_YODA_COUNCIL.md)**  
+10. **[Yoda-Led Jedi Council](../../skills/wielder/SKILL_YODA_COUNCIL.md)**  
    *Scope:* Governing approval transition from Planning to Execution, requiring disciplined anti-hubris checks and empirically grounded boundary mathematics. "Do or do not."
