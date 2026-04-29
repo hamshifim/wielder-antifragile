@@ -127,6 +127,15 @@ As projects grow, especially data and in-silico projects with many providers, as
   raw/wuxi/in-vitro/adme/ppb
   ```
 
+### 2.2 Configuration Provenance Hashing and Rehydration
+Deterministic configuration identity and payload provenance are framework mechanics, not domain-specific application behavior. Projects should not each invent bespoke hashing or config rehydration functions.
+
+- **Guideline:** Wielder owns generic deterministic hashing for resolved configuration trees and local runtime payloads. Prefer Wielder utilities such as `get_global_conf_hash(...)` and `get_local_provenance_hash(...)` over project-local copies.
+- **Guideline:** Wielder owns generic config artifact rehydration from a concrete URI/path or from a hash plus a caller-provided provenance root.
+- **Guideline:** Projects own where provenance config artifacts physically live. A project wrapper may resolve a domain root such as `conf.starget.data.stage_root / "provenance" / "configs"` and then call the Wielder rehydration utility.
+- **Guideline:** Volatile runtime fields such as telemetry, `year`, `month`, or `day` should be excluded through the Wielder hashing contract, preferably by explicit exclusion parameters or shared defaults. Do not hardcode volatile-strip logic independently in every project.
+- **Guideline:** Keep backward-compatible project wrapper names only as thin bridges when existing callers depend on them. New code should import the Wielder utility directly unless it needs a project-owned provenance root.
+
 ### 3. Canonical Structural Mappings over Static Conditionals
 A framework built to handle limitless topologies scales significantly better when deferring to explicitly loaded HOCON schemas rather than evaluating static rules.
 - **Guideline:** Avoid hard-coding structural environmental identifiers (like `workstation_wsl` or `aws_eks`) directly within Python function logic (e.g., factory if/else statements).
