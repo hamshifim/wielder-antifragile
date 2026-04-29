@@ -95,6 +95,38 @@ Historically, the Wielder architecture minimized CLI bindings to protect the mat
 - **Failure Smell:** If two different code paths can resolve the same ecosystem, app, or deploy contract by reading different file sets, the design is already contaminated.
 - **Failure Smell:** If a caller loads a foreign app conf and then falls back to merging it wholesale into the local conf to "make variables appear," the boundary has already dissolved.
 
+### 2.1 Nested App Identity and Config Namespace
+As projects grow, especially data and in-silico projects with many providers, assays, models, engines, and workflow surfaces, app configuration must avoid both excessive flat width and arbitrary deep taxonomies. Wielder supports nested app identities through the same canonical app accessor rather than through project-local side loaders.
+
+- **Guideline:** Nested app identity should be a POSIX relative app path passed directly to the canonical accessor, for example:
+  ```python
+  get_app_conf("ingestion/wuxi/ppb")
+  ```
+- **Guideline:** The filesystem layout should mirror the app identity exactly:
+  ```text
+  conf/apps/ingestion/wuxi/ppb/app.conf
+  ```
+- **Guideline:** The HOCON tree inside the app config should mirror the same semantic hierarchy:
+  ```hocon
+  ingestion {
+    wuxi {
+      ppb {
+        source_key = "raw/wuxi/in-vitro/adme/ppb"
+      }
+    }
+  }
+  ```
+- **Guideline:** Do not flatten a nested app namespace into underscore keys such as `ingestion_wuxi_ppb` merely because the app has multiple hierarchy levels. Flattening erases ownership structure and causes config trees to drift from app identity.
+- **Guideline:** Legacy flat app identities remain valid for genuinely flat apps, for example `get_app_conf("drive_fetch")` resolving `conf/apps/drive_fetch/app.conf`.
+- **Guideline:** Nested app identities must be normalized relative POSIX paths. Reject absolute paths, `..`, duplicate separators, and Windows `\` separators at the resolver boundary.
+- **Guideline:** Wielder owns the generic nested app resolution mechanism; each project owns its taxonomy. Do not encode project-specific categories such as `ingestion`, `msa`, `structure`, `adme`, or vendor names in Wielder itself.
+- **Guideline:** Ecosystem names and app names are different contracts. An ecosystem may remain a flat routing identity such as `ingestion_wuxi_ppb`, while the app config identity and tree remain nested as `ingestion/wuxi/ppb` and `conf.ingestion.wuxi.ppb`.
+- **Guideline:** For data-domain app taxonomies, prefer stable operational discriminators near the front of the app path when they drive parsing and routing. Example:
+  ```text
+  conf/apps/ingestion/wuxi/ppb/app.conf
+  raw/wuxi/in-vitro/adme/ppb
+  ```
+
 ### 3. Canonical Structural Mappings over Static Conditionals
 A framework built to handle limitless topologies scales significantly better when deferring to explicitly loaded HOCON schemas rather than evaluating static rules.
 - **Guideline:** Avoid hard-coding structural environmental identifiers (like `workstation_wsl` or `aws_eks`) directly within Python function logic (e.g., factory if/else statements).
