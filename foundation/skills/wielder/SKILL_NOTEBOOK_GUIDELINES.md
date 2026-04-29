@@ -4,7 +4,9 @@ description: Interactive Exploration & Jupyter Notebook Standards
 # Jupyter Notebooks & Data Exploration
 
 - **Explore Intent**: In `explore/`-style notebook spaces, notebooks primarily exist for curiosity, analysis, and QA. They are allowed to be WET and investigative; the goal is to make real artifacts and behaviors legible, not to force exploratory work into production-shaped abstractions.
-- **Topical Organization Guideline**: When organizing exploration notebooks, prefer grouping by topic or investigation surface such as `topological_binding/protenix/` or `msa/mmseqs/` rather than by production app module. Treat this as a lightweight guideline for readability, not a rule that should slow down or block exploration.
+- **Notebook Placement**: Exploration notebooks belong under the repository's `explore/` tree, not inside production app modules. Keep production app directories for reusable code, configs, tests, and docs.
+- **Topical Organization Guideline**: Within `explore/`, prefer grouping by topic or investigation surface such as `topological_binding/protenix/` or `msa/mmseqs/` rather than by production app module. Treat this as a lightweight guideline for readability, not a rule that should slow down or block exploration.
+- **Naming**: Do not include `wet` or `notebook` in notebook filenames. Notebooks in `explore/` are already allowed to be WET and the `.ipynb` extension already says notebook.
 - **Displaying DataFrames**: Always use a scrollable frame utility (e.g., `from wielder.visual.display import display_scrollable_dataframe`) instead of raw `.head()` or `.tail()`. This prevents IDE DOM thrashing.
 - **1 Display Per Cell**: A single code cell MUST NOT contain multiple visual output calls to avoid crashing the DOM.
 - **Script-to-Notebook Duality**: Scripts and Notebooks MUST remain fluid. NEVER manually copy-paste cells. 
