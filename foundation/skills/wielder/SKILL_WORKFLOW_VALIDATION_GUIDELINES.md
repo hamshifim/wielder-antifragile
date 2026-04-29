@@ -93,6 +93,8 @@ Within that doctrine:
 - **Rule:** A workflow failure after image build but before runtime validation is still a useful systems result. It localizes the defect to provisioning, bridging, config propagation, or runtime topology.
 - **Rule:** A workflow that reaches the live foreground workload and holds steady has passed more than a unit or narrow integration check. It has validated the configured environment as a living system slice.
 - **Rule:** The resulting local diff after a successful run is a precise record of the deployment and image delta that was actually exercised.
+- **Rule:** A live system test may be used as an engineering workbench when the running workflow exposes a real boundary defect. Make the smallest coherent source/config change, re-enter through the Wielder entrypoint, and let the system test validate or reject the change.
+- **Rule:** Learning during a system test is not a deviation from antifragility. It is the mechanism by which the workflow, operator, and codebase evolve under real pressure. Durable lessons should be promoted into reusable skills, config contracts, workflow code, or documentation.
 
 ## 7. Delta Reduction as a Design Goal
 
