@@ -16,18 +16,25 @@ Raw ingestion should preserve information while keeping reusable, transient, and
 
 2. **Experiment Metadata**
    - Transient run/workbook/sample context.
-   - Own the `metadata_id` referenced by raw measurements.
    - Store source file, study/run identifiers, study dates, sample grouping, compound/batch, matrix/species, and the linked `protocol_id`.
-   - Do not copy this context into every measurement row.
+   - It may be a separate keyed table when normalization helps more than reviewability.
+   - Prefer names like `experiment_context` when the table is a returned review/audit surface rather than a normalized join table.
 
-3. **Empirical**
-   - Row-level observed measurements only.
-   - Include the trailing `metadata_id` join key.
-   - Do not repeat source file, protocol, study, compound, matrix, sample-name, or other recurring context fields.
+3. **Material Inventory**
+   - Concrete material instances used in an experiment context.
+   - Link to context through a stable inventory-set id rather than embedding many materials into one context row.
+   - Use explicit source-label aliases to map vendor/CRO field labels into canonical columns.
+   - Preserve raw labels and source cells for every mapped inventory field.
+
+4. **Empirical**
+   - Row-level observed measurements.
+   - It may be enriched with transient experiment metadata when each measurement row needs to be self-contained for review, export, or downstream handoff.
+   - Keep reusable protocol text separate and reference it through a trailing `protocol_id`.
 
 ## Audit Leftovers
 
 Keep an audit table for non-empty cells or records not confidently assigned to the three raw tiers. This is not a fourth data tier; it is ingestion accounting. Derived report outputs can live here during raw ingestion until a later derived-data pass explicitly owns them.
+When recurring leftovers can be explained, add forensic attribution columns rather than silently dropping them or promoting weakly understood helper cells into scientific tables.
 
 ## Column Order
 
@@ -38,4 +45,4 @@ Column order should optimize human inspection before storage purity.
 - Put technical/provenance fields last.
 - IDs, hashes, source paths, scope labels, and bookkeeping columns should usually trail unless the table exists specifically to inspect provenance.
 
-Example: an experiment metadata table should lead with dimensions such as `sample_name`, `compound_id`, `species`, `strain`, `matrix`, and `mw`, then supporting run/study descriptors, and end with `metadata_scope`, `source_file`, `protocol_id`, and `metadata_id`.
+Example: an enriched empirical table should lead with dimensions such as `sample_name`, `compound_id`, `species`, `strain`, `matrix`, and `mw`, then observed measurement columns, then supporting run/study descriptors, and end with `source_file` and `protocol_id`.
