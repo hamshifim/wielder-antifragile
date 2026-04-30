@@ -5,7 +5,7 @@ This tree holds the semantic authored content for `wielder-antifragile`.
 ## Canonical Foundation Assets
 
 - `docs/manifesto/`
-  Antifragile doctrine and manifesto material.
+  Antifragile, datalake, and related manifesto material.
 - `docs/catalogs/`
   Cross-cutting catalogs such as master persona and skill indexes.
 - `personas/wielder/`

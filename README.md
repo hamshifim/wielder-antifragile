@@ -145,6 +145,7 @@ Then edit the copied local files to match the developer or agent context.
 - [Master Personas](foundation/docs/catalogs/MASTER_PERSONAS.md)
 - [Master Skills](foundation/docs/catalogs/MASTER_SKILLS.md)
 - [The Antifragile Manifesto](foundation/docs/manifesto/THE_ANTIFRAGILE_MANIFESTO.md)
+- [The Data Lake Manifesto](foundation/docs/manifesto/THE_DATALAKE_MANIFESTO.md)
 
 ### Personas
 
