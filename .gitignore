@@ -2,3 +2,5 @@
 conf/developer/developer.conf
 __pycache__/
 *.py[cod]
+
+*secret*

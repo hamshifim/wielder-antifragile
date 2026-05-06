@@ -36,3 +36,6 @@ To ensure architectural alignment across varying Python execution environments a
 
 11. **[Yoda-Led Jedi Council](../../skills/wielder/SKILL_YODA_COUNCIL.md)**  
    *Scope:* Governing approval transition from Planning to Execution, requiring disciplined anti-hubris checks and empirically grounded boundary mathematics. "Do or do not."
+
+12. **[Grill Me](../../skills/wielder/SKILL_GRILL_ME.md)**  
+   *Scope:* One-question-at-a-time adversarial plan interrogation, with repository inspection before asking and a recommended answer for every question.
