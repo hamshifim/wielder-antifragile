@@ -7,7 +7,7 @@ This tree holds the semantic authored content for `wielder-antifragile`.
 - `docs/manifesto/`
   Antifragile, datalake, and related manifesto material.
 - `docs/catalogs/`
-  Cross-cutting catalogs such as master persona and skill indexes.
+  Cross-cutting catalogs such as master persona, skill, and wieldable functionality indexes.
 - `personas/wielder/`
   Canonical Wielder-base personas.
 - `skills/wielder/`

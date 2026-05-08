@@ -42,3 +42,8 @@ To ensure architectural alignment across varying Python execution environments a
 
 13. **[Operator Alignment](../../skills/wielder/SKILL_OPERATOR_ALIGNMENT.md)**  
    *Scope:* Compressing repeated operator corrections and repository evidence into durable config, docs, tests, glossary terms, and task handoffs without relying on chat memory.
+
+## Related Catalogs
+
+- **[Wieldable Functionalities](WIELDABLE_FUNCTIONALITIES.md)**  
+  *Scope:* Growing index of reusable operator-facing Wielder capabilities such as Terraform provisioning, Kubernetes workloads, storage cloning, and runtime CLI configuration.

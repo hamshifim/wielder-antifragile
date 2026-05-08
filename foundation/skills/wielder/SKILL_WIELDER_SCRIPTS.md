@@ -57,6 +57,19 @@ Some Wielder actions are expected to run for minutes or hours, especially bucket
 * After handoff, treat pasted terminal output as the continuation point. Diagnose failures from that output and patch the smallest relevant source/config boundary.
 * If an agent accidentally starts a long-running local process and it is not needed for immediate inspection, stop it cleanly when safe and give the operator the command to rerun.
 
+## 2.5 Provision Runtime Tooling From Config
+When a Wielder script depends on a third-party CLI such as `rclone`, the script should remove manual setup burden where it can do so safely.
+
+* Prefer generating or ensuring local CLI configuration from the resolved Wielder config before asking the operator to enter an interactive setup flow.
+* Keep generated local configuration in developer-local paths, usually under `~/.config/<tool>/`, and point to that path from `context_conf/<name>/developer.conf`.
+* For rclone, prefer a generic WCloner-side config factory such as `WCloner.configure_rclone(...)` that materializes all configured remotes from HOCON before planning or execution.
+* Do not version secrets, OAuth tokens, access keys, or one-off migration coordinates. Version only the reusable config shape and examples.
+* If a CLI can consume short-lived credentials through environment variables, inject them at execution time rather than materializing tokens into versioned config.
+* For GCP-hosted execution, prefer service-account ADC or metadata credentials with rclone `env_auth = true`; do not design hosted jobs around interactive `gcloud` OAuth or operator-local tokens.
+* For local GCP-dev execution, short-lived `gcloud auth print-access-token` injection is acceptable when it avoids writing tokens into rclone config.
+* Preserve provider surfaces through factories and accessors. A script should ask a Bucketeer/WCloner-style surface to ensure a bucket or destination, not branch on concrete provider names except at the factory registry boundary.
+* Add new reusable capabilities to the Wieldable Functionalities catalog when they become stable operator-facing patterns.
+
 ## 3. Standalone Invocation Formatting
 Because Wielder evaluation scripts are often automated or executed directly across various shells (WSL, native Linux, CI/CD), they benefit from secure formatting to prevent common shell evaluation traps (e.g., the ImageMagick `import` bash hijacking).
 
