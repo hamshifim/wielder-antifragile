@@ -131,6 +131,11 @@ lowercase, hyphenated, and within the provider length limit.
 Human access to secrets should be assigned through Google Workspace groups, not
 individual users.
 
+RBAC groups should live in the resolved security configuration, typically under
+`rbac_groups`, and cloud IAM should consume those same config keys. When a
+Google Workspace group is required by Terraform IAM, a Workspace Argus preflight
+should create or verify the group before Terraform applies the binding.
+
 Keep the split explicit:
 
 - daemon service account: can read only the exact secret payloads it needs

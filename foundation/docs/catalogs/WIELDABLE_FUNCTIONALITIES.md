@@ -46,7 +46,7 @@ Add a functionality here when it becomes a repeated Starget operation with a sta
 - Contract: secret definitions, target provider, stage tier, Workspace group ownership, runtime readers, and payload sources live in config; payload values are redacted from logs.
 - Security hood: default hood is `org`; non-default hoods such as `restricted` or `break_glass` become explicit identity name fragments when they change access.
 - Boundary: WArgus owns reusable secret operations; Terraform/provisioning owns durable secret containers, IAM bindings, service accounts, and provider resources.
-- Workspace boundary: `GoogleWorkspaceArgus` owns group-oriented operations such as verifying/provisioning Workspace groups and group-bound access intent; `GCPArgus` owns GCP Secret Manager payload operations.
+- Workspace boundary: `GoogleWorkspaceArgus` owns group-oriented operations such as verifying/provisioning Workspace groups and group-bound access intent from `rbac_groups`; `GCPArgus` owns GCP Secret Manager payload operations.
 - Operator rule: `show` and `plan` must never print payloads; `apply` may populate secret versions from approved local secret sources.
 
 ## Candidate Functionalities
