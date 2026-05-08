@@ -26,16 +26,16 @@ Add a functionality here when it becomes a repeated Starget operation with a sta
 
 - Purpose: mirror or migrate data between local paths, Google Drive, Google Cloud Storage, and AWS S3.
 - Shape: `WCloner` receives typed endpoints from HOCON and delegates destination creation to Bucketeer factories.
-- Contract: source, sink, sync type, rclone config path, flags, RBAC, and create-if-missing behavior live in config.
+- Contract: source, sink, sync type, WClone backend config path, flags, RBAC, and create-if-missing behavior live in config.
 - Operator rule: agents may run `show`, `plan`, and `probe`; long `apply` syncs should be handed to the operator terminal.
 
-### Rclone Configuration
+### WClone Backend Configuration
 
-- Purpose: avoid repeated interactive rclone setup for stable remotes.
-- Shape: Wielder scripts may call `WCloner.configure_rclone(...)` to ensure generic local rclone remotes such as `starget_aws` and `starget_gcs` in a developer-local config file.
-- Contract: generated configs live under `~/.config/rclone/`; credentials should come from runtime auth, MFA helpers, service account flows, or short-lived environment variables.
-- Operator rule: do not ask the operator to manually recreate deterministic rclone remotes when the script can create the safe non-secret sections.
-- GCP rule: local dev may inject `gcloud auth print-access-token`; GCP-hosted jobs should use service-account ADC or metadata credentials with rclone `env_auth = true`.
+- Purpose: avoid repeated interactive setup for stable clone backends.
+- Shape: Wielder scripts may call `WCloner.configure_wclone(...)` to ensure generic local remotes such as `starget_aws` and `starget_gcs` in a developer-local backend config file.
+- Contract: generated configs live under `~/.config/wclone/`; credentials should come from runtime auth, MFA helpers, service account flows, or short-lived environment variables.
+- Operator rule: do not ask the operator to manually recreate deterministic clone remotes when the script can create the safe non-secret sections.
+- GCP rule: local dev may inject `gcloud auth print-access-token`; GCP-hosted jobs should use service-account ADC or metadata credentials with backend `env_auth = true`.
 
 ## Candidate Functionalities
 

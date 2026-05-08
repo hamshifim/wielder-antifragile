@@ -48,7 +48,7 @@ Deployment workflows frequently need asymmetric behavior between `apply` and `de
 * When a deploy script orchestrates several resources, strongly suggest exposing delete granularity per resource class such as third-party services, topics, local port-forwards, workload services, and infrastructure.
 
 ## 2.4 Long-Running Operator Handoff
-Some Wielder actions are expected to run for minutes or hours, especially bucket mirrors, rclone syncs, image builds, Terraform applies, large data ingestion jobs, and cloud workflow executions.
+Some Wielder actions are expected to run for minutes or hours, especially bucket mirrors, storage syncs, image builds, Terraform applies, large data ingestion jobs, and cloud workflow executions.
 
 * Agents should run short validation actions themselves, such as `show`, `plan`, `probe`, linting, focused tests, and command construction checks.
 * Agents should not start long-running `apply`, sync, mirror, clone, build, or migration jobs unless the operator explicitly asks the agent to run them and wait.
@@ -58,15 +58,15 @@ Some Wielder actions are expected to run for minutes or hours, especially bucket
 * If an agent accidentally starts a long-running local process and it is not needed for immediate inspection, stop it cleanly when safe and give the operator the command to rerun.
 
 ## 2.5 Provision Runtime Tooling From Config
-When a Wielder script depends on a third-party CLI such as `rclone`, the script should remove manual setup burden where it can do so safely.
+When a Wielder script depends on a backend CLI, the script should remove manual setup burden where it can do so safely.
 
 * Prefer generating or ensuring local CLI configuration from the resolved Wielder config before asking the operator to enter an interactive setup flow.
 * Keep generated local configuration in developer-local paths, usually under `~/.config/<tool>/`, and point to that path from `context_conf/<name>/developer.conf`.
-* For rclone, prefer a generic WCloner-side config factory such as `WCloner.configure_rclone(...)` that materializes all configured remotes from HOCON before planning or execution.
+* For clone backend configuration, prefer a generic WCloner-side config factory such as `WCloner.configure_wclone(...)` that materializes all configured remotes from HOCON before planning or execution.
 * Do not version secrets, OAuth tokens, access keys, or one-off migration coordinates. Version only the reusable config shape and examples.
 * If a CLI can consume short-lived credentials through environment variables, inject them at execution time rather than materializing tokens into versioned config.
-* For GCP-hosted execution, prefer service-account ADC or metadata credentials with rclone `env_auth = true`; do not design hosted jobs around interactive `gcloud` OAuth or operator-local tokens.
-* For local GCP-dev execution, short-lived `gcloud auth print-access-token` injection is acceptable when it avoids writing tokens into rclone config.
+* For GCP-hosted execution, prefer service-account ADC or metadata credentials with backend `env_auth = true`; do not design hosted jobs around interactive `gcloud` OAuth or operator-local tokens.
+* For local GCP-dev execution, short-lived `gcloud auth print-access-token` injection is acceptable when it avoids writing tokens into WClone backend config.
 * Preserve provider surfaces through factories and accessors. A script should ask a Bucketeer/WCloner-style surface to ensure a bucket or destination, not branch on concrete provider names except at the factory registry boundary.
 * Add new reusable capabilities to the Wieldable Functionalities catalog when they become stable operator-facing patterns.
 
