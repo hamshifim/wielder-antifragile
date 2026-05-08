@@ -47,6 +47,16 @@ Deployment workflows frequently need asymmetric behavior between `apply` and `de
 * Strongly suggest letting the script branch on `WieldAction` and then read the matching config family, rather than treating `delete` as a blind inversion of `apply`.
 * When a deploy script orchestrates several resources, strongly suggest exposing delete granularity per resource class such as third-party services, topics, local port-forwards, workload services, and infrastructure.
 
+## 2.4 Long-Running Operator Handoff
+Some Wielder actions are expected to run for minutes or hours, especially bucket mirrors, rclone syncs, image builds, Terraform applies, large data ingestion jobs, and cloud workflow executions.
+
+* Agents should run short validation actions themselves, such as `show`, `plan`, `probe`, linting, focused tests, and command construction checks.
+* Agents should not start long-running `apply`, sync, mirror, clone, build, or migration jobs unless the operator explicitly asks the agent to run them and wait.
+* For long-running jobs, provide the exact absolute command for the operator's terminal, including the repository-root-safe script path and required Wielder modes.
+* Before handing off, verify that config resolves and that the command shape is correct with the lightest available action (`show`, `plan`, or `probe`).
+* After handoff, treat pasted terminal output as the continuation point. Diagnose failures from that output and patch the smallest relevant source/config boundary.
+* If an agent accidentally starts a long-running local process and it is not needed for immediate inspection, stop it cleanly when safe and give the operator the command to rerun.
+
 ## 3. Standalone Invocation Formatting
 Because Wielder evaluation scripts are often automated or executed directly across various shells (WSL, native Linux, CI/CD), they benefit from secure formatting to prevent common shell evaluation traps (e.g., the ImageMagick `import` bash hijacking).
 
