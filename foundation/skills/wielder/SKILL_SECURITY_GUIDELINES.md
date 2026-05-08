@@ -105,6 +105,10 @@ lowercase, hyphenated, and within the provider length limit.
 - Terraform may create secret containers and IAM bindings.
 - Real secret payload versions are operator/runtime state unless the repo has
   an explicit encrypted secret-state policy.
+- Secret-version pushes should run through a dedicated WArgus/GCPArgus-style
+  entrypoint, separate from Terraform. Payload source references may be
+  configured, but payload values must stay out of config, Terraform state, and
+  logs.
 - Do not put OAuth tokens, refresh tokens, AWS keys, service account JSON, or
   one-off migration credentials in tracked HOCON, Terraform variables, Docker
   images, notebooks, or generated docs.
