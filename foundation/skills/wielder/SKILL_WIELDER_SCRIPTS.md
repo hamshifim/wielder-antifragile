@@ -67,6 +67,9 @@ When a Wielder script depends on a backend CLI, the script should remove manual 
 * If a CLI can consume short-lived credentials through environment variables, inject them at execution time rather than materializing tokens into versioned config.
 * For GCP-hosted execution, prefer service-account ADC or metadata credentials with backend `env_auth = true`; do not design hosted jobs around interactive `gcloud` OAuth or operator-local tokens.
 * For local GCP-dev execution, short-lived `gcloud auth print-access-token` injection is acceptable when it avoids writing tokens into WClone backend config.
+* For hosted clone daemons, store external provider credentials in the cloud-native secret manager for that runtime and bind access through the daemon service account. On GCP this means Secret Manager secrets plus resource-scoped IAM for the WClone daemon service account.
+* Terraform may create secret containers and IAM bindings, but real secret payload versions should be injected out of band unless the repository has an explicit encrypted secret-state policy.
+* Prefer provider-native federation over static cross-cloud keys when the target provider supports it. Static keys in a secret manager are a transitional mechanism, not the desired end state.
 * Preserve provider surfaces through factories and accessors. A script should ask a Bucketeer/WCloner-style surface to ensure a bucket or destination, not branch on concrete provider names except at the factory registry boundary.
 * Add new reusable capabilities to the Wieldable Functionalities catalog when they become stable operator-facing patterns.
 

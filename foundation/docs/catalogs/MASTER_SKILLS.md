@@ -43,6 +43,9 @@ To ensure architectural alignment across varying Python execution environments a
 13. **[Operator Alignment](../../skills/wielder/SKILL_OPERATOR_ALIGNMENT.md)**  
    *Scope:* Compressing repeated operator corrections and repository evidence into durable config, docs, tests, glossary terms, and task handoffs without relying on chat memory.
 
+14. **[Security Guidelines](../../skills/wielder/SKILL_SECURITY_GUIDELINES.md)**  
+   *Scope:* Security, secrets, IAM/RBAC, runtime identities, cross-cloud credentials, and stage-tier naming for permission-bearing resources.
+
 ## Related Catalogs
 
 - **[Wieldable Functionalities](WIELDABLE_FUNCTIONALITIES.md)**  

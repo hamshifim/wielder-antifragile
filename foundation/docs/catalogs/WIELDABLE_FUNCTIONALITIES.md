@@ -27,6 +27,7 @@ Add a functionality here when it becomes a repeated Starget operation with a sta
 - Purpose: mirror or migrate data between local paths, Google Drive, Google Cloud Storage, and AWS S3.
 - Shape: `WCloner` receives typed endpoints from HOCON and delegates destination creation to Bucketeer factories.
 - Contract: source, sink, sync type, WClone backend config path, flags, RBAC, and create-if-missing behavior live in config.
+- Runtime security: hosted daemons should read external credentials from provider-native secret managers through a dedicated runtime identity, with bucket and pub/sub access scoped to the exact resources they operate on.
 - Operator rule: agents may run `show`, `plan`, and `probe`; long `apply` syncs should be handed to the operator terminal.
 
 ### WClone Backend Configuration
@@ -36,6 +37,7 @@ Add a functionality here when it becomes a repeated Starget operation with a sta
 - Contract: generated configs live under `~/.config/wclone/`; credentials should come from runtime auth, MFA helpers, service account flows, or short-lived environment variables.
 - Operator rule: do not ask the operator to manually recreate deterministic clone remotes when the script can create the safe non-secret sections.
 - GCP rule: local dev may inject `gcloud auth print-access-token`; GCP-hosted jobs should use service-account ADC or metadata credentials with backend `env_auth = true`.
+- Secret rule: version non-secret backend shape only. Secret containers and IAM are provisionable; secret payloads are operator/runtime state.
 
 ## Candidate Functionalities
 

@@ -36,6 +36,31 @@ calls a proven tool can be more wieldable than a large framework wrapper.
 The environment boundary for resources and execution, such as `dev`, `qa`, or
 `prod`. Stage tier should drive physical isolation for mutable resources.
 
+## Classification
+Classification is the act of assigning a resource, data artifact, identity, or
+event surface to its security and operational category before permissions are
+designed.
+
+Useful classification axes include data tier, provider boundary, stage tier,
+actor type, mutability, and event surface. Classification should precede IAM;
+unclear classification is a planning problem, not a reason for broad access.
+
+## Compartmentalization
+Compartmentalization is the isolation of classified resources and actors into
+the smallest practical blast-radius boundary.
+
+Common compartments include stage tier, CRO/source, raw versus interpreted
+data, human versus daemon identity, writer versus reader access, source versus
+destination mirror, and secret payload access versus non-secret config access.
+
+## Organization Slug
+An organization slug is the short human-readable organization identity used in
+resource names when an agent, daemon, process, or trust subject operates across
+or outside its enclosing organization or compartment.
+
+For Starget, the slug is `starget`. Example:
+`starget-wclone-daemon-dev`.
+
 ## Project
 A project is the provider or repository boundary that owns resources or source
 code. In GCP, a project is a cloud resource container such as `starget-dev`.
