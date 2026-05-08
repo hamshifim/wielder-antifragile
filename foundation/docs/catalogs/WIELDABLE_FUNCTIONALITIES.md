@@ -39,6 +39,16 @@ Add a functionality here when it becomes a repeated Starget operation with a sta
 - GCP rule: local dev may inject `gcloud auth print-access-token`; GCP-hosted jobs should use service-account ADC or metadata credentials with backend `env_auth = true`.
 - Secret rule: version non-secret backend shape only. Secret containers and IAM are provisionable; secret payloads are operator/runtime state.
 
+### WArgus Secret Guarding
+
+- Purpose: pump local/operator secret values into provider-native secret managers and expose security operations through a Wielder surface.
+- Shape: `WArgus` is a provider-neutral factory/interface with implementations such as `GCPArgus`, `GoogleWorkspaceArgus`, `AWSArgus`, and local/dev variants.
+- Contract: secret definitions, target provider, stage tier, Workspace group ownership, runtime readers, and payload sources live in config; payload values are redacted from logs.
+- Security hood: default hood is `org`; non-default hoods such as `restricted` or `break_glass` become explicit identity name fragments when they change access.
+- Boundary: WArgus owns reusable secret operations; Terraform/provisioning owns durable secret containers, IAM bindings, service accounts, and provider resources.
+- Workspace boundary: `GoogleWorkspaceArgus` owns group-oriented operations such as verifying/provisioning Workspace groups and group-bound access intent; `GCPArgus` owns GCP Secret Manager payload operations.
+- Operator rule: `show` and `plan` must never print payloads; `apply` may populate secret versions from approved local secret sources.
+
 ## Candidate Functionalities
 
 - Cloud pub/sub provisioning and event contract wiring.

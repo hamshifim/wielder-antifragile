@@ -32,6 +32,24 @@ documented scripts.
 Wieldable does not mean over-abstracted. A thin script that resolves config and
 calls a proven tool can be more wieldable than a large framework wrapper.
 
+## WArgus
+WArgus is the Wielder security guardian abstraction for provider-backed secrets,
+identity, groups, and permission surfaces. It should behave like Bucketeer for
+security: a provider-neutral interface with provider implementations such as
+`GCPArgus`, `GoogleWorkspaceArgus`, `AWSArgus`, and local/dev variants.
+
+WArgus owns reusable secret value pumping, redacted planning/logging, and
+provider dispatch. Project-specific names, groups, and Terraform modules remain
+owned by the project/provisioning app.
+
+## Security Hood
+A security hood is the WArgus security posture selected by the `security`
+topology dimension. The default hood is `org`, meaning the normal
+organization-wide posture.
+
+Non-default hoods such as `restricted` or `break_glass` should appear in
+permission-bearing identity names when they change access.
+
 ## Stage Tier
 The environment boundary for resources and execution, such as `dev`, `qa`, or
 `prod`. Stage tier should drive physical isolation for mutable resources.

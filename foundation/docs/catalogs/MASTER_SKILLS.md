@@ -46,6 +46,9 @@ To ensure architectural alignment across varying Python execution environments a
 14. **[Security Guidelines](../../skills/wielder/SKILL_SECURITY_GUIDELINES.md)**  
    *Scope:* Security, secrets, IAM/RBAC, runtime identities, cross-cloud credentials, and stage-tier naming for permission-bearing resources.
 
+15. **[Concise Operator Communication](../../skills/wielder/SKILL_CONCISE_OPERATOR_COMMUNICATION.md)**  
+   *Scope:* Short, informative, tangent-free operator answers for unfamiliar technical plans and security-sensitive decisions.
+
 ## Related Catalogs
 
 - **[Wieldable Functionalities](WIELDABLE_FUNCTIONALITIES.md)**  

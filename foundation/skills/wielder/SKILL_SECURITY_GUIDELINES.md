@@ -115,11 +115,42 @@ lowercase, hyphenated, and within the provider length limit.
 
 - Every hosted daemon or scheduled job should run as a dedicated service
   account/role for that job family and `stage_tier`.
+- The default WArgus security hood is `org`, meaning the normal
+  organization-wide security posture. Do not use `standard` as the default
+  security identity term.
+- Non-default hoods such as `restricted` or `break_glass` should appear in
+  permission-bearing identity names when they change access.
 - Human operator identities and daemon identities must be separate.
 - The daemon should receive only the permissions needed for the configured
   sources, sinks, topics, and secrets.
 - Avoid project/account-wide roles when resource-scoped IAM can express the
   contract.
+
+## Group-Bound Human Secret Ownership
+
+Human access to secrets should be assigned through Google Workspace groups, not
+individual users.
+
+Keep the split explicit:
+
+- daemon service account: can read only the exact secret payloads it needs
+- operator group: can rotate or manage secret versions for its compartment
+- break-glass group: can read payloads only if explicitly required
+
+For GCP Secret Manager, prefer secret-level IAM bindings:
+
+- runtime reader: `roles/secretmanager.secretAccessor`
+- rotation-only group: `roles/secretmanager.secretVersionAdder` or
+  `roles/secretmanager.secretVersionManager`
+- full secret administration: `roles/secretmanager.admin`, only when the group
+  truly owns the whole secret container
+
+The group name should carry the organization and compartment when it is
+permission-bearing, for example:
+
+```text
+starget-wclone-secret-operators-dev@stargetpharma.com
+```
 
 ## GCP Pattern
 
@@ -130,6 +161,8 @@ For GCP-hosted WClone or ingestion daemons:
   `starget-wclone-daemon-dev@starget-dev.iam.gserviceaccount.com`.
 - Grant `roles/secretmanager.secretAccessor` on specific secrets, not the whole
   project.
+- Bind human secret rotation/administration through a Google Workspace group,
+  not individual users.
 - Grant bucket IAM on exact source/destination buckets.
 - Grant `roles/pubsub.publisher` on exact event topics.
 - Use ADC/metadata credentials for GCP access with backend `env_auth = true`.
@@ -147,6 +180,8 @@ Before approving or implementing a security plan, check:
   include the organization slug?
 - Are secret payloads excluded from tracked config and Terraform variables?
 - Is the runtime identity distinct from human/admin identities?
+- Are human secret permissions bound to Google Workspace groups rather than
+  individual users?
 - Are IAM grants resource-scoped wherever the provider supports it?
 - Is the fallback from federation to static credentials explicit and temporary?
 - Can an operator verify identities, secret IAM, bucket IAM, and topic IAM with
