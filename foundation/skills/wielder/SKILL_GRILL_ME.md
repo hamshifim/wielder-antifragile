@@ -12,6 +12,11 @@ changes merely because a candidate plan mentions them. Execution starts only
 after the user gives a separate explicit implementation instruction once the
 plan is stable.
 
+When repeated user corrections are converging into project doctrine, pair this
+skill with `SKILL_OPERATOR_ALIGNMENT.md`: promote settled decisions into task
+markdown, docs, config, tests, or glossary entries rather than keeping them only
+in conversation.
+
 ## Protocol
 
 1. Inspect before asking.

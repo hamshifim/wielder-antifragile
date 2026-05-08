@@ -39,3 +39,6 @@ To ensure architectural alignment across varying Python execution environments a
 
 12. **[Grill Me](../../skills/wielder/SKILL_GRILL_ME.md)**  
    *Scope:* One-question-at-a-time adversarial plan interrogation, with repository inspection before asking and a recommended answer for every question.
+
+13. **[Operator Alignment](../../skills/wielder/SKILL_OPERATOR_ALIGNMENT.md)**  
+   *Scope:* Compressing repeated operator corrections and repository evidence into durable config, docs, tests, glossary terms, and task handoffs without relying on chat memory.
