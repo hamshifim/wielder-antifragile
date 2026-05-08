@@ -135,6 +135,9 @@ RBAC groups should live in the resolved security configuration, typically under
 `rbac_groups`, and cloud IAM should consume those same config keys. When a
 Google Workspace group is required by Terraform IAM, a Workspace Argus preflight
 should create or verify the group before Terraform applies the binding.
+Provider APIs needed by that preflight should also be declared in config, for
+example `google_workspace_argus.required_services`, and enabled by the
+provisioning script before the preflight executes.
 
 Keep the split explicit:
 
